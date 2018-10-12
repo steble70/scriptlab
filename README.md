@@ -28,7 +28,7 @@ Expression={$_.FriendlyName}}, OperationalStatus, HealthStatus, Size | Format-Li
 Write-Host "Kontrollerar om hårddisken är OK..."
 Repair-Volume -DriveLetter c -OfflineScanAndFix 
 Optimize-Volume -DriveLetter c -Analyze 
-```
+
 
 <# Om din dator upptäder konstigt (tex helt plötsligt startar om av sig själv), kan det 
 vara ett teckan det det är något fel med RAM minnet.#>
@@ -48,3 +48,4 @@ while ($true) {
     }
 
 }
+```
