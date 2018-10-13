@@ -1,5 +1,5 @@
 ## Välkommen till Scriptlab
-[Stefan Bleckos](www.twitter.com/minnesbilder) Python/PowerShell sajt 
+[Stefan Bleckos](https://twitter.com/minnesbilder)Python/PowerShell sajt 
 
 ```powershell
 #Requires -RunAsAdministrator
