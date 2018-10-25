@@ -1,11 +1,11 @@
-## Välkommen till Scriptlab
-#### [Stefan Bleckos](https://twitter.com/minnesbilder) Python/PowerShell sajt 
-
-```powershell
-#Requires -RunAsAdministrator
-<#GN - Grävande nätverkstekniker version 0.1
+﻿#Requires -RunAsAdministrator
+<#GN - Grävande Nätverkstekniker 
 (C) 2018 av Stefan
-#>
+
+Kopiera och klistra in koden i notepad.exe (Anteckningar) och spara filen som gn.ps1 
+(förslagsvis). Kör sedan filen gn.ps1 (genom PowerShell) i administartörs läge vilket
+innebär att du högerklicka på powershell.exe (PowerShell finns i alla nyare versioner 
+av Windows) och välj "Kör som administratör". Skriv sedan .\gn.ps1 för att köra filen.#>
 
 Set-ExecutionPolicy Bypass -scope Process -Force
 
@@ -29,7 +29,6 @@ Write-Host "Kontrollerar om hårddisken är OK..."
 Repair-Volume -DriveLetter c -OfflineScanAndFix 
 Optimize-Volume -DriveLetter c -Analyze 
 
-
 <# Om din dator upptäder konstigt (tex helt plötsligt startar om av sig själv), kan det 
 vara ett teckan det det är något fel med RAM minnet.#>
 while ($true) {
@@ -48,4 +47,3 @@ while ($true) {
     }
 
 }
-```
