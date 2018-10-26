@@ -1,5 +1,5 @@
 <#
-Lathund för PowerShell 5.1 noviser version 0.1
+Lathund för PowerShell 5.1 noviser version 0.1c
 © 2018 av Stefan Blecko
 
 Kopiera gärna innehållet i filen till C:\Users\[ditt användarnamn]\Documents\
