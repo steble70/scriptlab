@@ -1,10 +1,9 @@
 <#
-Lathund för PowerShell 5.1 noviser version 0.1d
+Lathund för PowerShell 5.1 noviser version 0.1e
 © 2018 av Stefan Blecko
 
 Kopiera gärna innehållet i filen till C:\Users\[ditt användarnamn]\Documents\
-WindowsPowerShell\Microsoft.PowerShell_profile.ps1.  
-händer.
+WindowsPowerShell\Microsoft.PowerShell_profile.ps1.
 #>
 
 $PSprojfoldername = "PSproj"
