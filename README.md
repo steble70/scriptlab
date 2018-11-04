@@ -1,4 +1,5 @@
-[logo]:https://github.com/steble70/scriptlab/blob/master/PowerPython.jpg
+![PowerShell-Python Logo](/PowerPython.jpg)
+
 
 ## Välkommen till Scriptlab
 #### [Stefan Bleckos](https://twitter.com/minnesbilder) Python/PowerShell sajt 
