@@ -1,5 +1,5 @@
 <#
-Lathund för PowerShell 5.1 noviser version 0.1g
+Lathund för PowerShell 5.1 noviser version 0.1h
 © 2018 av Stefan Blecko
 
 Kopiera gärna innehållet i filen till C:\Users\[ditt användarnamn]\Documents\
@@ -10,6 +10,7 @@ $PSprojfoldername = "PSproj"
 Set-Variable $HOME C:\Users\$env:USERNAME
 Write-Host "Användare: $env:USERNAME | Projektmapp: $PSprojfoldername`n"`
 -BackgroundColor DarkBlue
+
 if (Test-Path -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername") {
 }
 else {
@@ -22,44 +23,62 @@ New-PSDrive -Name $PSprojfoldername -PSProvider FileSystem -Root `
 "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername" -Description `
 "Välkommen till skript lådan." | Out-Null 
 
-    
+Function Get-PSHelpMenu {
+    Write-Host "`nMENY" -BackgroundColor Black -ForegroundColor White -NoNewline
+    $showmenu = @{"Din skript mapp:" = "Get-PSproj"; "Powershell Konsol hjälp:" = 
+    "Get-PSConHelp"; "Nytt Konsol fönster:" = "New-PSWin"; "Powershell miljövariabler:" = "Get-PSEnv"; 
+    "Powershell reserverade ord:" = "Get-PSResWord"; "Automatiska variabler:" =
+    "Get-PSAutoVar"}
+    $showmenu | Format-Table -HideTableHeaders
+}
 Function Get-PSproj {
-    Write-Host "`nPÅGÅENDE POWERSHELL PROJEKT (GET-PSPROJ)" -ForegroundColor White `
-    -BackgroundColor Black -NoNewline
     Set-Location ($PSprojfoldername + ":")
+    Write-Host "`nPÅGÅENDE POWERSHELL PROJEKT" -ForegroundColor White `
+    -BackgroundColor Black -NoNewline
+    
     Get-ChildItem *.ps1 | Select @{Name = "Skript"; Expression = {$_.Name}}, 
     @{Name = "Senast ändrad"; Expression = {$_.LastWriteTime}} | sort "Senast ändrad" `
     -Descending | Out-Host
 }
 Function Get-PSConHelp {
-    Write-Host "`nPOWERSHELL KONSOL HJÄLP (GET-PSCONHELP)" -ForegroundColor White `
+    Write-Host "`nPOWERSHELL KONSOL HJÄLP" -ForegroundColor White `
     -BackgroundColor Black -NoNewline
     Get-PSReadlineKeyHandler -Bound | Select Function, Key | ? {$_.Function `
     -notmatch "DigitArgument"} | Format-Table -HideTableHeaders
     Write-Host "NewPowerShellWindow     New-PSWin`n`n" -ForegroundColor Gray
 }
-
 Function New-PSWin { 
     Start-Process -FilePath "powershell.exe" -ArgumentList `
-    "-NoLogo -NoProfile -WindowStyle Normal"
+    "-NoLogo -NoProfile -WindowStyle Normal" 
 }
-
 Function Get-PSEnv {
-    Write-Host "`nPOWERSHELL MILJÖ VARIABLER (GET-PSENV)" -ForegroundColor `
+    Write-Host "`nPOWERSHELL MILJÖ VARIABLER" -ForegroundColor `
     White -BackgroundColor Black -NoNewline
     Get-ChildItem env: | select Name | Format-Table -HideTableHeaders
 }
-Function Get-PSVar {
-    Write-Host "`nINBYGGDA POWERSHELL VARIABLER (GET-PSVAR)" -ForegroundColor `
+Function Get-PSAutoVar {
+    Write-Host "`nPOWERSHELL AUTOMATISKA VARIABLER" -ForegroundColor `
     White -BackgroundColor Black -NoNewline
     Get-Variable | select Name | sort Name | Format-Table -HideTableHeaders
 } 
+Function Get-PSResWord {
+    $reswords = @{"Begin;" = " "; "Break:" = " "; "Catch:" = " "; 
+    "Continue:" = " "; "Data:" = " "; "Do:" = " "; "DynamicParam:" = " "; 
+    "Else:" = 'if ($x-eq 5) {Write "Bingo!"; break} else {Write "Inte Bingo"}'; 
+    "Elseif:" = " "; "End:" = " "; "Exit:" = " "; "Filter:" = " "; 
+    "For:" = 'for ($x = 1; $x -lt 11; $x++) {Write-Host $x}'; "ForEach:" = " "; 
+    "From:" = " "; "Function:" = " "; "If:" = 'if ($x-eq 5) {Write "Bingo!"; break} 
+    else {Write "Inte Bingo"}'; "In:" = " "; "InlineScript:" = " "; "Hidden:" = " ";
+    "Parallel:" = " "; "Param:" = " "; "Process:" = " "; "Return:" = " "; "Sequence:" = " ";
+    "Switch:" = " "; "Throw:" = " "; "Trap:" = " "; "Until:" = " "; "While:" = " "; "Workflow:" = " "}
+    
+    Write-Host "`nRESERVERADE ORD" -BackgroundColor Black -ForegroundColor White -NoNewline
+    $reswords | Format-Table -HideTableHeaders 
+}
 Function main {
+    Get-PSHelpMenu
     Get-PSproj
-    Get-PSConHelp
-    Get-PSEnv
-    Get-PSVar
-
+    
 }
 
 main
