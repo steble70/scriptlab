@@ -25,9 +25,9 @@ New-PSDrive -Name $PSprojfoldername -PSProvider FileSystem -Root `
 
 Function Get-PSHelpMenu {
     Write-Host "`nMENY" -BackgroundColor Black -ForegroundColor White -NoNewline
-    $showmenu = @{"Din skript mapp:" = "Get-PSproj"; "Powershell Konsol hjälp:" = 
-    "Get-PSConHelp"; "Nytt Konsol fönster:" = "New-PSWin"; "Powershell miljövariabler:" = "Get-PSEnv"; 
-    "Powershell reserverade ord:" = "Get-PSResWord"; "Automatiska variabler:" =
+    $showmenu = @{"Din skript mapp:" = "Get-PSproj"; "Konsol hjälp:" = 
+    "Get-PSConHelp"; "Nytt Konsol fönster:" = "New-PSWin"; "Miljövariabler:" = "Get-PSEnv"; 
+    "Reserverade ord:" = "Get-PSResWord"; "Automatiska variabler:" =
     "Get-PSAutoVar"}
     $showmenu | Format-Table -HideTableHeaders
 }
@@ -45,39 +45,39 @@ Function Get-PSConHelp {
     -BackgroundColor Black -NoNewline
     Get-PSReadlineKeyHandler -Bound | Select Function, Key | ? {$_.Function `
     -notmatch "DigitArgument"} | Format-Table -HideTableHeaders
-    Write-Host "NewPowerShellWindow     New-PSWin`n`n" -ForegroundColor Gray
 }
 Function New-PSWin { 
     Start-Process -FilePath "powershell.exe" -ArgumentList `
     "-NoLogo -NoProfile -WindowStyle Normal" 
 }
 Function Get-PSEnv {
-    Write-Host "`nPOWERSHELL MILJÖ VARIABLER" -ForegroundColor `
+    Write-Host "`nMILJÖ VARIABLER" -ForegroundColor `
     White -BackgroundColor Black -NoNewline
     Get-ChildItem env: | select Name | Format-Table -HideTableHeaders
 }
 Function Get-PSAutoVar {
-    Write-Host "`nPOWERSHELL AUTOMATISKA VARIABLER" -ForegroundColor `
+    Write-Host "`nAUTOMATISKA VARIABLER" -ForegroundColor `
     White -BackgroundColor Black -NoNewline
     Get-Variable | select Name | sort Name | Format-Table -HideTableHeaders
 } 
 Function Get-PSResWord {
     $reswords = @{"Begin;" = " "; "Break:" = " "; "Catch:" = " "; 
     "Continue:" = " "; "Data:" = " "; "Do:" = " "; "DynamicParam:" = " "; 
-    "Else:" = 'if ($x-eq 5) {Write "Bingo!"; break} else {Write "Inte Bingo"}'; 
-    "Elseif:" = " "; "End:" = " "; "Exit:" = " "; "Filter:" = " "; 
-    "For:" = 'for ($x = 1; $x -lt 11; $x++) {Write-Host $x}'; "ForEach:" = " "; 
-    "From:" = " "; "Function:" = " "; "If:" = 'if ($x-eq 5) {Write "Bingo!"; break} 
-    else {Write "Inte Bingo"}'; "In:" = " "; "InlineScript:" = " "; "Hidden:" = " ";
-    "Parallel:" = " "; "Param:" = " "; "Process:" = " "; "Return:" = " "; "Sequence:" = " ";
-    "Switch:" = " "; "Throw:" = " "; "Trap:" = " "; "Until:" = " "; "While:" = " "; "Workflow:" = " "}
+    "Else:" = 'else {Write "Inte Bingo"}'; 
+    "Elseif:" = 'if ($x-eq 5) {Write "Bingo!"; break} else {Write "Inte Bingo"}'; 
+    "End:" = " "; "Exit:" = " "; "Filter:" = " "; "For:" = 'for ($x = 1; $x -lt 11; $x++) {Write-Host $x}'; 
+    "ForEach:" = " "; "From:" = " "; "Function:" = " "; "If:" = 'if ($x-eq 5) {Write "Bingo!"; break} 
+    else {Write "Inte Bingo"}'; "In:" = " "; "InlineScript:" = " "; "Hidden:" = " "; "Parallel:" = " "; 
+    "Param:" = " "; "Process:" = " "; "Return:" = " "; "Sequence:" = " "; "Switch:" = " "; "Throw:" = `
+    " "; "Trap:" = " "; "Until:" = " "; "While:" = 'while ($x -ne (Get-Random 10)) 
+    {Write "Inte Bingo."; Sleep -Seconds 1}; Write "BINGO!"'; "Workflow:" = " "}
     
     Write-Host "`nRESERVERADE ORD" -BackgroundColor Black -ForegroundColor White -NoNewline
     $reswords | Format-Table -HideTableHeaders 
 }
 Function main {
-    Get-PSHelpMenu
     Get-PSproj
+    Get-PSHelpMenu
     
 }
 
