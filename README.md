@@ -5,50 +5,88 @@
 #### [Stefan Bleckos](https://twitter.com/minnesbilder) Python/PowerShell sajt 
 
 ```powershell
-#Requires -RunAsAdministrator
-<#GN - Grävande nätverkstekniker version 0.1
-(C) 2018 av Stefan
+<#
+Lathund för PowerShell 5.1 noviser version 0.1i
+© 2018 av Stefan Blecko
+
+Kopiera gärna innehållet i filen till C:\Users\[ditt användarnamn]\Documents\
+WindowsPowerShell\Microsoft.PowerShell_profile.ps1.  
 #>
 
-Set-ExecutionPolicy Bypass -scope Process -Force
+$PSprojfoldername = "PSproj"
+Set-Variable $HOME C:\Users\$env:USERNAME
+Write-Host "Användare: $env:USERNAME | Projektmapp: $PSprojfoldername`n"`
+-BackgroundColor DarkBlue
 
-
-<#Visar ditt datormärke, serienummer, processor, opertivsystem, Windows serienummer, ljudkort, 
-grafikkort och hårddisk. Visar statusen för ljudkortet, grafikkortet samt hårddisken.#>
-Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object @{Name="Datormärke";
-Expression={$_.Manufacturer}}, Model | Format-List 
-Get-CimInstance -ClassName Win32_Processor | Select-Object @{Name="Processor";
-Expression={$_.Name}} | Format-List 
-Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object @{Name="Operativsystem";
-Expression={$_.Caption}}, BuildNumber, SerialNumber | Format-List 
-Get-CimInstance -ClassName Win32_SoundDevice | Select-Object @{Name="Ljudkort";
-Expression={$_.Name}},Status | Format-List 
-Get-CimInstance -ClassName Win32_VideoController | Select-Object @{Name="Grafikkort";
-Expression={$_.Name}}, Status | Format-List 
-Get-PhysicalDisk | Select-Object @{Name="Hårddisk";
-Expression={$_.FriendlyName}}, OperationalStatus, HealthStatus, Size | Format-List
-
-Write-Host "Kontrollerar om hårddisken är OK..."
-Repair-Volume -DriveLetter c -OfflineScanAndFix 
-Optimize-Volume -DriveLetter c -Analyze 
-
-
-<# Om din dator upptäder konstigt (tex helt plötsligt startar om av sig själv), kan det 
-vara ett teckan det det är något fel med RAM minnet.#>
-while ($true) {
-    $memcheck = Read-Host "Vill du kontrollera RAM minnet med Windows minnesdiagnostik (j/n)?"
-    if ($memcheck -eq "j") {
-        mdsched.exe # Programmet mdsched.exe körs (finns med i Windows 10).
-        break      
-    }
-    elseif ($memcheck -eq "n") {
-        Write-Host "Don't Worry Be Happy."
-        Start-Sleep -Seconds 5  
-        break
-    }
-    else { 
-        $memcheck | Out-Null
-    }
-
+if (Test-Path -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername") {
 }
+else {
+    New-Item -Path "C:\Users\$env:USERNAME\Desktop\" -Name $PSprojfoldername `
+    -ItemType "directory" | Out-Null
+    New-Item -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\" -Name `
+    "PSskript1.ps1" -ItemType "File" | Out-Null
+}
+New-PSDrive -Name $PSprojfoldername -PSProvider FileSystem -Root `
+"C:\Users\$env:USERNAME\Desktop\$PSprojfoldername" -Description `
+"Välkommen till skript lådan." | Out-Null 
+
+Function Get-PSHelpMenu {
+    Write-Host "`nMENY" -BackgroundColor Black -ForegroundColor White -NoNewline
+    $showmenu = @{"Din skript mapp:" = "Get-PSproj"; "Konsol hjälp:" = 
+    "Get-PSConHelp"; "Nytt Konsol fönster:" = "New-PSWin"; "Miljövariabler:" = "Get-PSEnv"; 
+    "Reserverade ord:" = "Get-PSResWord"; "Automatiska variabler:" =
+    "Get-PSAutoVar"}
+    $showmenu | Format-Table -HideTableHeaders
+}
+Function Get-PSproj {
+    Set-Location ($PSprojfoldername + ":")
+    Write-Host "`nPÅGÅENDE POWERSHELL PROJEKT" -ForegroundColor White `
+    -BackgroundColor Black -NoNewline
+    
+    Get-ChildItem *.ps1 | Select @{Name = "Skript"; Expression = {$_.Name}}, 
+    @{Name = "Senast ändrad"; Expression = {$_.LastWriteTime}} | sort "Senast ändrad" `
+    -Descending | Out-Host
+}
+Function Get-PSConHelp {
+    Write-Host "`nPOWERSHELL KONSOL HJÄLP" -ForegroundColor White `
+    -BackgroundColor Black -NoNewline
+    Get-PSReadlineKeyHandler -Bound | Select Function, Key | ? {$_.Function `
+    -notmatch "DigitArgument"} | Format-Table -HideTableHeaders
+}
+Function New-PSWin { 
+    Start-Process -FilePath "powershell.exe" -ArgumentList `
+    "-NoLogo -NoProfile -WindowStyle Normal" 
+}
+Function Get-PSEnv {
+    Write-Host "`nMILJÖ VARIABLER" -ForegroundColor `
+    White -BackgroundColor Black -NoNewline
+    Get-ChildItem env: | select Name | Format-Table -HideTableHeaders
+}
+Function Get-PSAutoVar {
+    Write-Host "`nAUTOMATISKA VARIABLER" -ForegroundColor `
+    White -BackgroundColor Black -NoNewline
+    Get-Variable | select Name | sort Name | Format-Table -HideTableHeaders
+} 
+Function Get-PSResWord {
+    $reswords = @{"Begin;" = " "; "Break:" = " "; "Catch:" = " "; 
+    "Continue:" = " "; "Data:" = " "; "Do:" = " "; "DynamicParam:" = " "; 
+    "Else:" = 'else {Write "Inte Bingo"}'; 
+    "Elseif:" = 'if ($x-eq 5) {Write "Bingo!"; break} else {Write "Inte Bingo"}'; 
+    "End:" = " "; "Exit:" = " "; "Filter:" = " "; "For:" = 'for ($x = 1; $x -lt 11; $x++) {Write-Host $x}'; 
+    "ForEach:" = " "; "From:" = " "; "Function:" = " "; "If:" = 'if ($x-eq 5) {Write "Bingo!"; break} 
+    else {Write "Inte Bingo"}'; "In:" = " "; "InlineScript:" = " "; "Hidden:" = " "; "Parallel:" = " "; 
+    "Param:" = " "; "Process:" = " "; "Return:" = " "; "Sequence:" = " "; "Switch:" = " "; "Throw:" = `
+    " "; "Trap:" = " "; "Until:" = " "; "While:" = 'while ($x -ne (Get-Random 10)) 
+    {Write "Inte Bingo."; Sleep -Seconds 1}; Write "BINGO!"'; "Workflow:" = " "}
+    
+    Write-Host "`nRESERVERADE ORD" -BackgroundColor Black -ForegroundColor White -NoNewline
+    $reswords | Format-Table -HideTableHeaders 
+}
+Function main {
+    Get-PSproj
+    Get-PSHelpMenu
+    
+}
+
+main
 ```
