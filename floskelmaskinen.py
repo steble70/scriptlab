@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#Floskelmaskinen version 0.1b (c) 2019 av Stefan Blacko
+#Floskelmaskinen version 0.1c (c) 2019 av Stefan Blecko
 
 import random
 
