@@ -1,7 +1,7 @@
 #!\usr\bin\env python
 
 #argumentationsfel.py version 0.1
-#(C) 2018 av Stefan
+#(C) 2018 av Stefan Blecko
 
 #Valår
 #Lägg filen i autostart mappen i Windows 10 (C:\Users\DITT ANVÄNDAR NAMN\
