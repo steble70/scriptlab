@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#(C) 2018 av Stefan. Version 0.1
+#(C) 2018 av Stefan Blecko. Version 0.1
 
 import time, datetime, calendar
 
