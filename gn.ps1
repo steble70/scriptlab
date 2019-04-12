@@ -1,6 +1,6 @@
 ﻿#Requires -RunAsAdministrator
 <#GN - Grävande Nätverkstekniker 
-(C) 2018 av Stefan
+(C) 2018 av Stefan Blecko
 
 Kopiera och klistra in koden i notepad.exe (Anteckningar) och spara filen som gn.ps1 
 (förslagsvis). Kör sedan filen gn.ps1 (genom PowerShell) i administartörs läge vilket
