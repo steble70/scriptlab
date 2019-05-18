@@ -19,8 +19,8 @@ function Get-DalaiLama {
         $happiness ,
         [Parameter(Mandatory = $false)]
         $defaulthappiness 
-
     )
+
     Write-Output "
     Om man önskar lycka bör man söka de orsaker som 
     ger upphov till den och om man inte önskar lidande
@@ -29,20 +29,22 @@ function Get-DalaiLama {
                                             
                                             Dalai Lama" 
 
-    # Om $defaulthappiness är satt till större eller lika med 0.
-    if ($defaulthappiness -ge 0) {
+    if ($defaulthappiness -ge 0 -and $defaulthappiness -le 100) {
         Set-Content -Value $defaulthappiness -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"   
         $read_dh = Get-Content -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"
-    } 
-    # Annars läs in H_value.
+    }
+    elseif ($defaulthappiness -gt 100) {
+        Write-Host -Message "`n`nFel: [-defaulthappiness] är större än 100. Försök igen.`n" -ForegroundColor Red
+        break
+    }
     elseif (Test-Path -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value") {
-        $read_dh = Get-Content -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"
-    }
-    # Finns inget $defaulthappiness, sätt $defaulthappiness till 50.
+        $read_dh = Get-Content -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"        
+    }  
     else {
-        Set-Content -Value "50" -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"   
-        $read_dh = Get-Content -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"
+        Set-Content -Value "50" -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"
+        $read_dh = Get-Content -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"        
     }
+    
     $sum = [int]$read_dh + [int]$happiness
     Write-Host "`n`nDin nuvarande lyckonivå är $sum%.`n"
     Set-Content -Value $sum -Path "$env:USERPROFILE\Documents\PowerShell\Modules\Get-DalaiLama\H_value"
