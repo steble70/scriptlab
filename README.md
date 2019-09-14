@@ -3,6 +3,7 @@
 
 ## Välkommen till Scriptlab
 #### [Stefan Bleckos](https://twitter.com/minnesbilder) Python/PowerShell sajt 
+##### Kilcka gärna på länkarna ovan för titta närmare på källkoden.
 
 ```powershell
 <#
