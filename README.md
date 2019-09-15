@@ -1,4 +1,4 @@
-![PowerShell-Python Logo](/banner.jpg)
+![PowerShell-Python Logo](/Banner.jpg)
 
 
 ## Välkommen till Scriptlab
