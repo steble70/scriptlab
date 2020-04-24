@@ -1,49 +1,80 @@
-﻿#Requires -RunAsAdministrator
-<#GN - Grävande Nätverkstekniker 
-(C) 2018 av Stefan Blecko
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
 
-Kopiera och klistra in koden i notepad.exe (Anteckningar) och spara filen som gn.ps1 
-(förslagsvis). Kör sedan filen gn.ps1 (genom PowerShell) i administartörs läge vilket
-innebär att du högerklicka på powershell.exe (PowerShell finns i alla nyare versioner 
-av Windows) och välj "Kör som administratör". Skriv sedan .\gn.ps1 för att köra filen.#>
+<#
+GN - Grävande Nätverkstekniker
+Version 0.1c
+© 2020 av Stefan Blecko
+#>
 
-Set-ExecutionPolicy Bypass -scope Process -Force
+function inventory {
+    $comp_brand = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object `
+    Manufacturer -ExpandProperty Manufacturer
 
+    $bios = Get-CimInstance -ClassName Win32_BIOS | Select-Object Manufacturer `
+    -ExpandProperty Manufacturer
 
-<#Visar ditt datormärke, serienummer, processor, opertivsystem, Windows serienummer, ljudkort, 
-grafikkort och hårddisk. Visar statusen för ljudkortet, grafikkortet samt hårddisken.#>
-Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object @{Name="Datormärke";
-Expression={$_.Manufacturer}}, Model | Format-List 
-Get-CimInstance -ClassName Win32_Processor | Select-Object @{Name="Processor";
-Expression={$_.Name}} | Format-List 
-Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object @{Name="Operativsystem";
-Expression={$_.Caption}}, BuildNumber, SerialNumber | Format-List 
-Get-CimInstance -ClassName Win32_SoundDevice | Select-Object @{Name="Ljudkort";
-Expression={$_.Name}},Status | Format-List 
-Get-CimInstance -ClassName Win32_VideoController | Select-Object @{Name="Grafikkort";
-Expression={$_.Name}}, Status | Format-List 
-Get-PhysicalDisk | Select-Object @{Name="Hårddisk";
-Expression={$_.FriendlyName}}, OperationalStatus, HealthStatus, Size | Format-List
+    $bios_version = Get-CimInstance -ClassName Win32_BIOS | Select-Object Version `
+    -ExpandProperty Version
 
-Write-Host "Kontrollerar om hårddisken är OK..."
-Repair-Volume -DriveLetter c -OfflineScanAndFix 
-Optimize-Volume -DriveLetter c -Analyze 
+    $comp_serial = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object `
+    Model -ExpandProperty Model
 
-<# Om din dator upptäder konstigt (tex helt plötsligt startar om av sig själv), kan det 
-vara ett teckan det det är något fel med RAM minnet.#>
-while ($true) {
-    $memcheck = Read-Host "Vill du kontrollera RAM minnet med Windows minnesdiagnostik (j/n)?"
-    if ($memcheck -eq "j") {
-        mdsched.exe # Programmet mdsched.exe körs (finns med i Windows 10).
-        break      
+    $cpu = Get-CimInstance -ClassName Win32_Processor | Select-Object Name `
+    -ExpandProperty Name
+
+    $os = Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object Caption `
+    -ExpandProperty Caption
+
+    $win_serial = Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object `
+    SerialNumber -ExpandProperty SerialNumber
+
+    $snd = Get-CimInstance -ClassName Win32_SoundDevice | Select-Object Name `
+    -ExpandProperty Name
+
+    $gpx = Get-CimInstance -ClassName Win32_VideoController | Select-Object Name `
+    -ExpandProperty Name
+
+    # $hdd = Get-CimInstance -ClassName Win32_DiskDrive | Where-Object -Property `
+    # DeviceID -EQ \\.\PHYSICALDRIVE0 | Select-Object Model -ExpandProperty Model
+
+    $hdd_size = Get-CimInstance -ClassName Win32_DiskDrive | Where-Object -Property `
+    DeviceID -EQ \\.\PHYSICALDRIVE0 | Select-Object size -ExpandProperty Size
+
+    $ram = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object `
+    TotalPhysicalMemory -ExpandProperty TotalPhysicalMemory
+
+    $nic = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration |
+    Where-Object -Property IPEnabled -EQ $true
+    <#
+    Konvertering medllan Bytes och andra enheter
+    Kbytes: [Bytes] / 1KB
+    Mbytes: [Bytes] / 1MB
+    Gbytes: [Bytes] / 1GB
+    Tbytes: [Bytes] / 1TB
+    #>
+
+    [PSCustomObject]@{
+        "Tillverkare" = $comp_brand
+        "Modell " = $comp_serial
+        "BIOS" = $bios
+        "BIOS version" = $bios_version
+        "Windows version" = $os
+        "Windows Produkt-ID" = $win_serial
+        "Processor" = $cpu
+        "RAM" = [math]::Round($ram / (1GB))
+        "Ljudkort" = $snd
+        "Grafikkort" = $gpx
+        "Hårddisk" = [math]::Round($hdd_size / (1GB))
+        "Nätverkskort" = $nic.Description
+        "Hostname" = $nic.DNSHostName
+        "DHCP server" = $nic.DHCPServer
+        "DNS Domain" = $nic.DNSDomain
+        "IP-adress" = $nic.IPAddress
+        "Default Gateway" = $nic.DefaultIPGateway
+        "Subnätmask" = $nic.IPSubnet
     }
-    elseif ($memcheck -eq "n") {
-        Write-Host "Don't Worry Be Happy."
-        Start-Sleep -Seconds 5  
-        break
-    }
-    else { 
-        $memcheck | Out-Null
-    }
-
 }
+function main {
+    inventory
+}
+main
