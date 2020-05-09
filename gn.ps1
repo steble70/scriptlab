@@ -1,12 +1,30 @@
+#Requires -RunAsAdministrator
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
 
 <#
-GN - Grävande Nätverkstekniker
-Version 0.1c
+gn.ps1 - Grävande Nätverkstekniker
+Version 0.2
 © 2020 av Stefan Blecko
+
+Att köra skriptet
+1. Starta Powershell 7 som administratör ("Run as Administrator")
+2. Det finns nu två sätt att köra skriptet
+
+   Alternativ 1
+   Spara skriptet som en .psm1 fil.
+   Kopiera filen till $env:USERPROFILE\Documents\PowerShell\Modules\gn\gn.psm1.
+
+   När du sen startar pwsh.exe (PowerShell konsolen) kommer dina funktioner
+   automatiskt laddas in.
+
+   Alternativ 2
+   Spara skriptet som en .ps1 fil (vanligt skript)
+   Kör filen genom att skriva (i PowerShell Core konsolen):
+   . .\gn.ps1
+
 #>
 
-function inventory {
+function Get-ComputerInventory {
     $comp_brand = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object `
     Manufacturer -ExpandProperty Manufacturer
 
@@ -34,9 +52,6 @@ function inventory {
     $gpx = Get-CimInstance -ClassName Win32_VideoController | Select-Object Name `
     -ExpandProperty Name
 
-    # $hdd = Get-CimInstance -ClassName Win32_DiskDrive | Where-Object -Property `
-    # DeviceID -EQ \\.\PHYSICALDRIVE0 | Select-Object Model -ExpandProperty Model
-
     $hdd_size = Get-CimInstance -ClassName Win32_DiskDrive | Where-Object -Property `
     DeviceID -EQ \\.\PHYSICALDRIVE0 | Select-Object size -ExpandProperty Size
 
@@ -46,7 +61,7 @@ function inventory {
     $nic = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration |
     Where-Object -Property IPEnabled -EQ $true
     <#
-    Konvertering medllan Bytes och andra enheter
+    Konvertering medlan Bytes och andra enheter
     Kbytes: [Bytes] / 1KB
     Mbytes: [Bytes] / 1MB
     Gbytes: [Bytes] / 1GB
@@ -66,6 +81,7 @@ function inventory {
         "Grafikkort" = $gpx
         "Hårddisk" = [math]::Round($hdd_size / (1GB))
         "Nätverkskort" = $nic.Description
+        "MAC adress" = $nic.MACAddress
         "Hostname" = $nic.DNSHostName
         "DHCP server" = $nic.DHCPServer
         "DNS Domain" = $nic.DNSDomain
@@ -74,7 +90,22 @@ function inventory {
         "Subnätmask" = $nic.IPSubnet
     }
 }
-function main {
-    inventory
+
+function Get-WinLogErr {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [int]$messages = 10
+    )
+    $sysappseclog = Get-WinEvent -LogName System, Application, Security | Where-Object {
+    $_.LevelDisplayName -contains "Varning" -or $_.LevelDisplayName -contains "Fel" `
+    -or $_.LevelDisplayName -contains "Kritisk" }
+    $sysappseclog | Sort-Object -Top $messages
 }
-main
+
+function Get-InstallProg {
+    $ErrorActionPreference='SilentlyContinue'
+    Get-CimInstance -ClassName Win32_InstalledWin32Program | Format-Wide -Property `
+    Name -Column 3
+}
