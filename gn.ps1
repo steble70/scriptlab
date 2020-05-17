@@ -1,9 +1,8 @@
 #Requires -RunAsAdministrator
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
 
 <#
 gn.ps1 - Grävande Nätverkstekniker
-Version 0.2
+Version 0.3
 © 2020 av Stefan Blecko
 
 Att köra skriptet
@@ -19,7 +18,7 @@ Att köra skriptet
 
    Alternativ 2
    Spara skriptet som en .ps1 fil (vanligt skript)
-   Kör filen genom att skriva (i PowerShell Core konsolen):
+   Kör filen genom att skriva (i PowerShell konsolen):
    . .\gn.ps1
 
 #>
@@ -92,6 +91,7 @@ function Get-ComputerInventory {
 }
 
 function Get-WinLogErr {
+    # Ex: Get-WinLogErr -messages 20
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -103,9 +103,22 @@ function Get-WinLogErr {
     -or $_.LevelDisplayName -contains "Kritisk" }
     $sysappseclog | Sort-Object -Top $messages
 }
+function Get-FilesGreaterThan {
+    # Ex: Get-FilesGreaterThan -mbyte 7 -path C:\Users\steble70\Desktop\
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$mbyte,
+        [Parameter(Mandatory)]
+        [System.IO.FileInfo]$path
+    )
+    $mbyte = $mbyte + "MB"
+    $ErrorActionPreference = 'SilentlyContinue'
+    Get-ChildItem -Path $path -Recurse -Force | Select-Object FullName, Length,
+    @{Name = "MB"; Expression = {[math]::Round($_.Length / 1MB, 2)}} |
+    Where-Object {$_.Length -gt $mbyte}
+}
 
 function Get-InstallProg {
-    $ErrorActionPreference='SilentlyContinue'
-    Get-CimInstance -ClassName Win32_InstalledWin32Program | Format-Wide -Property `
-    Name -Column 3
+    Get-CimInstance -ClassName Win32_Product | Format-Wide -Property Name -Column 3
 }
