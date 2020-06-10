@@ -1,0 +1,15 @@
+﻿Strings,Lists,Tuples,Dictionaries,Sets,Comparisons,Loops,Functions,Printing,File access,Input,Error stream,Other file operations,Exceptions ,OOP,JSON,Databases,SYS,OS
+"s = ""foo bar""","l = [1, 2, 3, 4, 5] ","x = 1,2,3","d = {'f1': 10, 'f2': 20}","s = {1,3,5}",< ,for x in range(6),"def foo(arg1, *args, **dic)",str(x),"f = open(""test.txt"", ""w"")","x = input(""Name: "") ","print(""Error!"", file=sys.stderr, flush=True) ","os.rename(from, to)","try: raise TypeError(""arg"") ",class Person:,,"conn = sqlite3.connect(""data.db"")",sys.argv,"os.path.split(""/usr/bin/go.sh"")"
+s = 'foo bar',l[0],"x = (1,2,3) ","d = dict(f1=10, f2=20)","l = [1, 3, 1, 5, 3]",<= ,"for x in range(1,6)",# arg1 is a positional argument ,repr(x),"f.write(""Ala ma kota\n"") ",for line in sys.stdin: print(line),,os.remove(path),"except (RuntimeError, NameError): pass",ID = 0,,c = conn.cursor() ,sys.stdin,"os.path.join(""/usr/bin"", ""go.sh"")"
+"s = r""c:\dir\new""",l[0:3],x[1] ,"keys = ('a', 'b', 'c') ","s = set(l) # set([1, 3, 5])",> ,"for x in range(1,6,2)",# dic is a dictionary of named arguments,,f.close(),,,"os.chmod(file, 0700)",finally:,"def __init__(self, name, age=0):",,"c.execute(""SELECT * FROM employees"") ",sys.stdout,"os.path.splitext(""/usr/bin/go.sh"")"
+"s = """"""Hello World""""”",l[-2:],"a,b,c = x ",d = dict.fromkeys(keys),"if (3 in s):  s1+s2, s1-s2, s1^s2, s1|s2 ",>= ,"for k,v in D.items(): print(""D[{}]={}"".format(k,v))",# args is a list ,,"for line in open(""test.txt""): print(line, end="""")",,,os.stat(file),,self.name = name ,,for row in c: print(row[0]) ,sys.path,"os.path.isfile(""go.sh"")"
+"s.join("" baz"")","l[1:4] = [7,8]",,for k in d: print(k),,==,"for i,v in enumerate(L)",,,"L = open(""test.txt"").readlines()",,,,,self.age = age ,,conn.commit() ,sys.platform,"os.environ.get(""PYTHONSTARTUP"") "
+n = len(s) ,del L[2],,for v in d.values(),,!= ,"for x,y in zip(L1,L2)",,,,,,,,def lastName(self):,,conn.close() ,sys.version,
+"""Ala ma {} psy i {} koty"".format(2,3) ",l.append(x),,"for k, v in d.items()",,is ,for i in sorted(set(L)),,,,,,,,return self.name.split()[-1] ,,,,
+"""Square root of 2 is equal to {:.2f}"".format(math.sqrt(2)) ",l.remove(x) ,,list(d.keys()),,is not ,for x in reversed(L1),,,,,,,,,,,,
+,l.extend(L2),,sorted(d.keys()),,,,,,,,,,,,,,,
+,l.pop(),,d = {} ,,,,,,,,,,,,,,,
+,l.sort(),,"d[(1,8,5)] = 100",,,,,,,,,,,,,,,
+,x in l,,"d.get((1,8,5))",,,,,,,,,,,,,,,
+,l.index(x),,"d.get((1,1,1), -1)",,,,,,,,,,,,,,,
+,[x*2 for x in l if x>2],,,,,,,,,,,,,,,,,
