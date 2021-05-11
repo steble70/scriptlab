@@ -1,42 +1,73 @@
 #!/usr/bin/env python
-# floskelmaskinen.py, version 0.2, (c) 2019, 2020 av Stefan Blecko
+
+"""
+floskelmaskinen.py, version 0.21, (c) 2019, 2020 av Stefan Blecko
+
+Ex:
+python floskelmaskinen.py (skapar 1 floskel)
+python floskelmaskinen.py --antal_floskler 43 (skapar 43 floskler)
+"""
 
 import random
 import argparse
+import time
+
 
 def floskel():
-    subjekt = ['Sverigedemokrater', 'Moderater', 'Centernpartister', 'Liberaler',
-               'Kristdemokrater']
+    data1 = [
+        "Sverigedemokrater",
+        "Moderater",
+        "Centerpartister",
+        "Liberaler",
+        "Kristdemokrater"]
 
-    predikat = ['vill se tillväxten av', 'vill ha fler', 'skapar tillfällen för',
-                'bekämpar utanförskapet genom','sätter focus på']
-                     
-    objekt = ['låga ingångslöner', 'arbetslinjen','värdegrunder', 'att göra rätt för sig',
-              'flera jobb', 'svenska värderingar', 'ansvar', 'sänkta bidrag', 'trygghet',
-              'fler poliser', 'integration', 'segregationen', 'småföretagande',
-              'sänkta ingångslöner', 'bidragsberoende', 'en valfrihet för alla',
-              'att ha mera RUT', 'entreprenörer', 'flera enkla jobb',
-              'friheten främst','en valfrihetsrevolutionen', 'ansvar först','arbeten',
-              'människor', 'i framtiden', 'landet']                 
+    data2 = [
+        "vill se tillväxten av",
+        "vill ha",
+        "skapar tillfällen för",
+        "bekämpar utanförskapet genom",
+        "sätter fokus på"]
 
-    return subjekt, predikat, objekt
+    data3 = [
+        "låga ingångslöner",
+        "med våran svenska värdegrund",
+        "möjligheten göra rätt för sig",
+        "flera jobb",
+        "att svenska värderingar ska råda i samhället",
+        "sunda statsfinanser",
+        "sänkta bidrag",
+        "trygghetsskapande åtgärder",
+        "fler poliser",
+        "fler integrationsåtgärder",
+        "segregationen",
+        "fler småföretagare",
+        "sänkta ingångslöner",
+        "bidragsberoende",
+        "en valfrihet för alla",
+        "fler RUT tjänster",
+        "fler entreprenörer i samhället",
+        "flera enkla jobb",
+        "frihetsreformer",
+        "en valfrihetsrevolutionen",
+        "ansvarstagande",
+        "sätter arbetslinjen främst",
+        "människor ska komma i arbete",
+        "genom våran framtidsvision",
+        "fokuserar på jobben, jobben, jobben"]
 
+    return data1, data2, data3
 
 def main():
-    '''
-    Ex:
-    python floskelmaskinen.py (skapar 1 floskel)
-    python floskelmaskinen.py --antal_floskler 43 (skapar 43 floskler)
-    '''
     parser = argparse.ArgumentParser()
-    parser.add_argument('--antal_floskler', default=1)
+    parser.add_argument("--antal_floskler", default=1)
     args = parser.parse_args()
 
     counter = 0
     while counter < int(args.antal_floskler):
         counter = counter + 1
-        print('Vi', random.choice(floskel()[0]), random.choice(floskel()[1]), 
-              random.choice(floskel()[2]), 'och', random.choice(floskel()[2]) + '.')
+        print("\nVi", random.choice(floskel()[0]), random.choice(floskel()[1]),
+            random.choice(floskel()[2]), "samt", random.choice(floskel()[2]) + ".")
+    time.sleep(10)
 
 if __name__ == "__main__":
     main()
