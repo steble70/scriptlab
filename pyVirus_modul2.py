@@ -3,7 +3,7 @@
 pyVirus_modul2.py av Stefan Blecko. Version 0.1 2021
 
 Detta är en modul till pyVirus.py skriptet. pyVirus_modul2.py kommer sammanfogas med
-pyVirus.py vid ett senare tillfälle. Skriptet ändrar fil namnet på alla filer
+pyVirus.py vid ett senare tillfälle. Skriptet ändrar filnamnet på alla filer
 (förutom på .py, .exe samt mappar) till "All you need is love__" + ett hexadecimalt
 tal mellan 11111 och 99999. Filändelsen ändras inte.
 """
