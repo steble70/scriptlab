@@ -1,20 +1,18 @@
-﻿{
+{
+    // JSON settings, VScode 1.58, copyright Stefan Blecko 2021
     "files.defaultLanguage": "powershell",
-    "python.pythonPath": "C:\\Users\\steble70\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.pythonPath": "C:\\Users\\steble70\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
     "python.formatting.provider": "black",
-    "python.languageServer": "Jedi",
-    "python.linting.flake8Enabled": true,
+    "python.languageServer": "Default",
+    "python.analysis.typeCheckingMode": "basic",
     "python.linting.pylintEnabled": false,
-    "python.dataScience.askForKernelRestart": false,
-    "python.dataScience.allowInput": true,
-    "python.dataScience.alwaysTrustNotebooks": true,
+    "python.showStartPage": false,
     "powershell.powerShellDefaultVersion": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
     "powershell.integratedConsole.focusConsoleOnExecute": true,
     "powershell.integratedConsole.showOnStartup": false,
     "powershell.integratedConsole.suppressStartupBanner": true,
     "powershell.integratedConsole.forceClearScrollbackBuffer": true,
     "powershell.promptToUpdatePowerShell": false,
-    "terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
     "terminal.external.windowsExec": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
     "terminal.integrated.cursorStyle": "underline",
     "terminal.integrated.cursorBlinking": true,
@@ -23,6 +21,7 @@
     "editor.tabCompletion": "on",
     "editor.suggestSelection": "first",
     "files.trimTrailingWhitespace": true,
+    "window.dialogStyle": "custom",
     "window.zoomLevel": 2,
     "editor.fontSize": 18,
     "editor.minimap.enabled": false,
@@ -35,5 +34,17 @@
     "breadcrumbs.enabled": true,
     "breadcrumbs.filePath": "off",
     "window.title": "${dirty}${separator}${appName}",
-    "vsicons.dontShowNewVersionMessage": true
+    "vsicons.dontShowNewVersionMessage": true,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "jupyter.askForKernelRestart": false,
+    "jupyter.allowInput": true,
+    "workbench.editor.untitled.hint": "hidden",
+    "terminal.integrated.tabs.enabled": true,
+    "security.workspace.trust.untrustedFiles": "open",
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
     }
