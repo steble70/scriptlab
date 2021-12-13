@@ -13,8 +13,8 @@ Skriptet gör 3 saker.
    med slumpmässigt innehåll på hårddisken. Man kan själv definiera
    hur många skräpfiler som ska skapas genom att skriva (från PowerShell):
    python pyVirus.py (skapar en fil)
-   python pyVirus.py --files 340 (skapar 340 filer)
-   python pyVirus.py --files 1000000 (skapar EN MILJON filer)
+   python pyVirus.py --generate_junk_files 340 (skapar 340 filer)
+   python pyVirus.py --generate_junk_files 1000000 (skapar EN MILJON filer)
    python pyVirus.py -h (visar hjälp)
 
 Vill man dölja källkoden kan man skapa en sk "compiled Python file".
