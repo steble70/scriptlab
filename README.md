@@ -8,6 +8,7 @@
 
 ### Python kompetenser
 ```python
+'''
 secupass.py - Genererar "säkra" lösenord
 Version 0.1 av Stefan Blecko
 Spara skripet och skriv sen (från PowerShell): 
