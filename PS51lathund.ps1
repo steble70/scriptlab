@@ -1,5 +1,5 @@
 <#
-Lathund för PowerShell 7.0 noviser version 0.3
+Lathund för PowerShell 7.0 noviser version 0.3.1
 © 2022 av Stefan Blecko
 
 Kopiera gärna innehållet i filen till C:\Users\[ditt användarnamn]\Documents\
@@ -13,9 +13,10 @@ $host.PrivateData.VerboseBackgroundColor = 'Black'
 $host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
 $host.UI.RawUI.BackgroundColor = 'Black'
 
-
-$PSprojfoldername = "POPYS"
 Set-Variable $HOME C:\Users\$env:USERNAME
+$PSprojfoldername = "POPYS"
+
+
 if (Test-Path -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername") {
 }
 else {
@@ -23,56 +24,34 @@ else {
         -ItemType "directory" | Out-Null
     New-Item -ItemType File "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\untitled1.ps1" | Out-Null
 }
+
 New-PSDrive -Name $PSprojfoldername -PSProvider FileSystem -Root `
-    "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername" -Description `
-    "Välkommen till skript lådan." | Out-Null
+    "$env:USERPROFILE\Desktop\$PSprojfoldername" -Description `
+    "Välkommen till skriptlådan." | Out-Null
 
-Function Get-ProjectFolder {
-    Set-Location ($PSprojfoldername + ":")
-    Get-ChildItem *.py, *.ps1, *.ipynb -Recurse | Select-Object @{Name = "Skript"; Expression = { $_.Name } },
-    @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | Sort-Object "Senast ändrad" `
-        -Descending | Out-Host
-}
-
-function Get-FileCount {
-    [CmdletBinding()]
-    param (
-        [array]$Path = '*',
-        [switch]$Recurse,
-        [switch]$GroupFileExtension
-    )
-    process {
-        if ($Recurse.IsPresent) {
-            if ($GroupFileExtension.IsPresent) {
-                Get-ChildItem $Path -Recurse -File | Group-Object -Property Extension |
-                Select-Object @{Name = "Antal"; Expression = { $_.Count } },
-                @{Name = "Filändelse"; Expression = { $_.Name } }
-                $c1 = Get-ChildItem $Path -Recurse -File | Measure-Object |
-                Select-Object Count -ExpandProperty Count
-                Write-Output "`nAntal filer (Exklusive folders): $c1"
-            }
-            else {
-                $c1 = Get-ChildItem $Path -Recurse -File | Measure-Object |
-                Select-Object Count -ExpandProperty Count
-                Write-Output "`nAntal filer (Exklusive folders): $c1"
-            }
-        }
-        else {
-            if ($GroupFileExtension.IsPresent) {
-                Get-ChildItem $Path -File | Group-Object -Property Extension |
-                Select-Object @{Name = "Antal"; Expression = { $_.Count } },
-                @{Name = "Filändelse"; Expression = { $_.Name } }
-                $c2 = Get-ChildItem $Path -File | Measure-Object |
-                Select-Object Count -ExpandProperty Count
-                Write-Output "`nAntal filer (Exklusive folders): $c2"
-            }
-            else {
-                $c2 = Get-ChildItem $Path -File | Measure-Object |
-                Select-Object Count -ExpandProperty Count
-                Write-Output "`nAntal filer (Exklusive folders): $c2"
-            }
+function Get-ProjectFolder {
+    Set-Location ($PSprojfoldername + ":\")
+    Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Recurse | Select-Object @{
+        Name = "Skript"; Expression = { $_.Name } },
+        @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | 
+        Sort-Object "Senast ändrad" -Descending | Out-Host 
+    if (Test-Path -Path D:\INSTALL\Git\PortableGit\bin\git.exe -PathType Leaf) {
+        $Env:PATH += "D:\INSTALL\Git\PortableGit\bin"
+        function Global:prompt {
+            (Write-Host "[GIT]:" -NoNewline -ForegroundColor DarkYellow -BackgroundColor DarkBlue) +
+            " $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+            return " "
         }
     }
+    else {
+        Write-Warning "Hittade inte Git Portable." -WarningAction Continue
+    }
+}
+
+function Get-AllProject {
+    Set-Location ($PSprojfoldername + ":\")
+    Get-ChildItem -Directory | Select-Object @{
+        Name = "Projekt skapade"; Expression = { $_.Name } }
 }
 
 function New-ProjektFolder {
@@ -82,42 +61,64 @@ function New-ProjektFolder {
         [string]$Newproject
     )
     process {
-        New-Item -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\" -Name $Newproject `
+        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\" -Name $Newproject `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\$Newproject\" -Name "temp" `
+        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "temp" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\$Newproject\" -Name "docs" `
+        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "docs" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\$Newproject\" -Name "$Newproject" `
+        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "$Newproject" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\$Newproject\" -Name "README.md" `
-            -ItemType File | Select-Object FullName -ExpandProperty FullName
+        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "README.md" `
+            -ItemType File | Select-Object FullName -ExpandProperty FullName 
+        Set-Location -Path "POPYS:\$Newproject\temp"
     }
-
 }
 
-Function Show-FuncMenu {
-    Get-ChildItem Function:Get*, Function:New*, Function:Clear* -Exclude Clear-Host |
-    Select-Object @{Name = "Meny"; Expression = { $_.Name } }
+function Get-ChangeLog {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$Project,
+        [string]$Topic
+    )
+    process {
+        if ($Topic) {
+            $new_pscustobj = [PSCustomObject]@{
+                'Datum'     = "$(Get-Date -Format FileDate)"
+                'Changelog' = "$Topic"
+            }
+            $new_pscustobj | 
+            Export-Csv "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv" -Force -Append
+        }
+        else {
+            if (Test-Path -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv") {
+                Import-Csv -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv"
+            }
+            else {
+                Write-Error "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv måste skapas först."
+            }
+        }
+    }
 }
 
-Function Get-PSConHelp {
+function Get-PSConHelp {
     Get-PSReadlineKeyHandler -Bound | Select-Object Function, Key |
-    Where-Object { $_.Function -notmatch "DigitArgument" } | more
+    Where-Object { $_.Function -notmatch "DigitArgument" }
 }
 
 function Get-PSHelpTopics {
-    $ProgressPreference = 'SilentlyContinue'
-    $OutputEncoding = [console]::OutputEncoding
-    $OutputEncoding.ASCIIENCODING
-    Get-Help about_* | Format-Wide -Property Name -Column 3 | more
+    # $OutputEncoding = [console]::OutputEncoding
+    # $OutputEncoding.ASCIIENCODING
+    Get-Help about_* | Format-Wide -Property Name -Column 3 
 }
+
 function Get-StackOverflowHelp {
     param (
-        [array]$topic = "powershell"
+        [array]$Topic = "powershell"
     )
     process {
-        Start-Process "https://stackoverflow.com/questions/tagged/$topic"
+        Start-Process "https://stackoverflow.com/questions/tagged/$Topic"
     }
 }
 
@@ -128,7 +129,8 @@ function New-PowerShellWindow {
 function New-AdminWindow {
     [CmdletBinding()]
     param (
-        [System.IO.FileInfo]$File = '-')
+        [System.IO.FileInfo]$File = '-'
+    ) 
     Start-Process -FilePath "pwsh.exe" -ArgumentList "-NoLogo -NoExit -File $File" -Verb RunAs
 }
 
@@ -138,55 +140,56 @@ function Clear-TmpFolder {
 }
 
 function Clear-PSReadlineHist {
-    Clear-Content $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
+    Clear-Content $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt -Force
 }
 
-Function Get-PSEnv {
-    Get-ChildItem env: | Format-Wide -Property Name -Column 3
+function Get-PSEnv {
+    @(Get-ChildItem env: | Select-Object Name)
 }
 
 function Get-PSAutoVar {
-    Get-Variable | Format-Wide -Property Name -Column 3
+    @(Get-Variable | Select-Object Name)
 }
 
 function Get-VScodeShortcuts {
     [PSCustomObject]@{
-        "Indent/Outdent"             = "Ctrl + Å/´"
-        "Maximize panel size"        = "Ctrl + Alt + Ö"
-        "Debug"                      = "Ctrl+ Shift + D"
-        "Run script"                 = "Ctrl + F5"
-        "Run selection"              = "F8"
-        "Insert snippets"            = "Ctrl + Alt + J"
-        "Open New External Terminal" = "Ctrl + Shift + C"
-        "IntelliSense"               = "Ctrl + I"
-        "Search"                     = "Ctrl + Shift + F"
-        "Line comment"               = "Ctrl + '"
-        "Block comment"              = "Shift + Alt + A"
-        "Go to line"                 = "Ctrl + G"
-        "Insert snippet"             = "Ctrl + Alt + J"
-        "Run VS Code in current dir" = "code ."
-        "Refactor"                   = "Ctrl + Shift + R"
-        "Explorer"                   = "Ctrl + Shift + E"
-        "Outline view"               = "Alt + O"
-    }
-}
-
-function Get-SoftwareDesignPrinciple {
-    [PSCustomObject]@{
-        'KISS principle'                  = 'https://en.wikipedia.org/wiki/KISS_principle'
-        "Don't repeat yourself"           = "https://en.wikipedia.org/wiki/Don't_repeat_yourself"
-        'Open-closed principle'           = 'https://en.wikipedia.org/wiki/Open–closed_principle'
-        'Composition over inheritance'    = 'https://en.wikipedia.org/wiki/Composition_over_inheritance'
-        'Single-responsibility principle' = 'https://en.wikipedia.org/wiki/Single-responsibility_principle'
-        'Separation of Concerns'          = 'https://en.wikipedia.org/wiki/Separation_of_concerns'
-        "You aren't gonna need it"        = "https://en.wikipedia.org/wiki/You_aren't_gonna_need_it"
-        'Premature Optimization'          = 'https://en.wikipedia.org/wiki/Program_optimization'
-        'Code refactoring'                = 'https://en.wikipedia.org/wiki/Code_refactoring'
-        'Clean Code'                      = ''
+        "Indent/Outdent"                   = "Ctrl + Å/´"
+        "Maximize panel size"              = "Ctrl + Alt + Ö"
+        "Debug"                            = "Ctrl+ Shift + D"
+        "Run script"                       = "Ctrl + F5"
+        "Run selection"                    = "F8"
+        "Insert snippets"                  = "Ctrl + Alt + J"
+        "Open New External Terminal"       = "Ctrl + Shift + C"
+        "IntelliSense"                     = "Ctrl + I"
+        "Search"                           = "Ctrl + Shift + F"
+        "Line comment"                     = "Ctrl + '"
+        "Block comment"                    = "Shift + Alt + A"
+        "Go to line"                       = "Ctrl + G"
+        "Insert snippet"                   = "Ctrl + Alt + J"
+        "Run VS Code in current dir"       = "code ."
+        "Refactor"                         = "Ctrl + Shift + R"
+        "Explorer"                         = "Ctrl + Shift + E"
+        "Outline view"                     = "Alt + O"
+        "Git"                              = "Ctrl + Shift + G"
+        "Toggle between Light/Dark Themes" = "Ctrl + Alt + T"
     }
 }
 
 function Get-VimQuickRef {
+    <#
+    Vim 9 script syntax
+    vim9script
+    # Detta är en kommentar
+    var a = 1
+    g:jackpot = {
+        mini: 10000
+        medium: 100000
+        maxi: 1000000
+        }
+    
+    def bonus():
+    return something    
+    #>
     [PSCustomObject]@{
         'Command-line mode'          = ':'
         'Cursor momment'             = 'h, j, k, l'
@@ -195,8 +198,10 @@ function Get-VimQuickRef {
         'Move down half a page'      = 'Ctrl + d'
         'Move up a half a page'      = 'Ctrl + u'
         'Go to line'                 = ': [num]'
-        'Copy'                       = 'y', 'yy'
-        'Paste'                      = 'p'
+        'Select'                     = 'v'
+        'Copy'                       = 'y', 'yy', 'Ctrl + Insert'
+        'Cut'                        = 'd', 'Shift + Delete'
+        'Paste'                      = 'p', 'Shift + Insert'
         'Save'                       = 'w', 'wq'
         'Delete character'           = 'x', 'X'
         'Delete word'                = 'dw', 'de'
@@ -204,7 +209,7 @@ function Get-VimQuickRef {
         'Redo'                       = 'Ctrl + r'
         'Visual mode'                = 'v'
         'New window'                 = ':vnew'
-        'Split Window'               = 'Ctrl + ws', 'Ctrl wv'
+        'Split Window'               = 'Ctrl + ws', 'Ctrl + wv'
         'Switch window'              = 'Ctrl + ww'
         'New tab'                    = ':tabe'
         'Go to the next tab'         = 'gt'
@@ -213,8 +218,66 @@ function Get-VimQuickRef {
     }
 }
 
+function Get-GitQuickRef {
+    [PSCustomObject]@{
+        'Create repositories' = 'git init', 'git clone [url]'
+        'Branches'            = 'git branch [branch-name]', 'git checkout [branch-name]',
+                                'git merge [branch]', 'git branch -d [branch-name]'
+        'Synchronize changes' = 'git fetch', 'git merge', 'git push', 'git pull'
+        'Make changes'        = 'git status', 'git log', 'git log --follow [file]',
+                                'git show [commit]', 'git add [file]',
+                                'git commit -m "[descriptive message]"'
+        'GitHub skills'       = 'skills.github.com'
+    }
+}
+
+function Set-WindowTitle {
+    param (
+        [string]$Title = 'Meny: dir function: | Format-Wide -Property Name -Column 3'
+    )
+    process {
+        $host.UI.RawUI.WindowTitle = "$Title"
+    }
+    
+}
+
+function Set-DefaultPrompt {
+    # function Global:prompt {"PS [$env:USERNAME]$PWD> "}
+    function Global:prompt {
+        "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+    }
+}
+
 function Get-WriterShortcuts {
     [PSCustomObject]@{
+        "Skapa formatmall"             = "Shift + F11"
+        "Formatmallar"                 = "F11"
+        "Synonymordlista"              = "Ctrl + F7"
+        "Navigator"                    = "F5"
+        "Gå till sida"                 = "Ctrl + G"
+        "Sök och Ersätt"               = "Ctrl + H"
+        "Skapa tabell"                 = "Ctrl + F12"
+        "Centrerad text"               = "Ctrl + E"
+        "Vänsterjusterad"              = "Ctrl + L"
+        "Brödtext"                     = "Ctrl + 0"
+        "Rubrik 2"                     = "Ctrl + 2"
+        "Radbrytning utan nytt stycke" = "Shift + Enter"
+        "Sidbrytning"                  = "Ctrl + Enter"
+        "Helskärm"                     = "Shift + Ctrl + J"
+        "Infoga kommentar"             = "Ctrl + Alt + C"
+        "Block selektion"              = "Ctrl + Shift + F8"
+        "Punktlista"                   = "Shift + F12"
+        "Upphäv bladskydd"             = "Ctrl + Shift + T"
+        "Slutet av dokumentet"         = "Ctrl + End"
+        "Höger-klick"                  = "(kontext) meny"
+    }
+}
+
+function Get-CalcShortcuts {
+    [PSCustomObject]@{
+        "Formulas"     = ""
+        "Filters"      = ""
+        "Pivot Tables" = ""
     }
 }
 
@@ -224,15 +287,21 @@ function Get-StudyTips {
 
 function Get-WhatsNew {
     param (
-        [switch]$Python = $false
+        [ValidateSet("Python", "PowerShell", "Obsidian", "VSCode")]
+        [string]$topic = "Python"
     )
     process {
-        if ($Python.IsPresent) {
+        if ($topic -eq "Python") {
             Start-Process "https://github.com/python/cpython/tree/main/Doc/whatsnew"
         }
+        elseif ($topic -eq "PowerShell") {
+            Start-Process "https://github.com/MicrosoftDocs/PowerShell-Docs/tree/staging/reference/docs-conceptual/whats-new"
+        }
+        elseif ($topic -eq "VSCode") {
+            Start-Process "https://github.com/microsoft/vscode/releases"
+        }
         else {
-             Start-Process "https://github.com/MicrosoftDocs/PowerShell-Docs/tree/staging/reference/docs-conceptual/whats-new"
-
+            Start-Process "https://forum.obsidian.md/c/announcements/13"
         }
     }
 }
@@ -251,136 +320,61 @@ function Set-PredictiveIntelliSense {
     }
 }
 
-function Get-ToDo {
+function Get-AllCmdlets {
+    # $OutputEncoding = [console]::OutputEncoding
+    # $OutputEncoding.ASCIIENCODING
+    Get-Command -CommandType Cmdlet, Function | Format-Wide -Property Name -Column 3
+}
+
+function Get-AdminTasks {
     [CmdletBinding()]
     param (
-        [string]$idea,
-        [string]$powershell,
-        [string]$python,
-        [string]$ccna,
-        [string]$finished,
-        [string]$writer,
-        [string]$calc,
-        [string]$youtube,
-        [string]$books
+        [Parameter(Mandatory)]
+        [ValidateSet("Server management", "Print management", "Remote management",
+            "Remote management (parameterName ComputerName)", "Runing files",
+            'Service management', "Windows Log", "TCPIP management", "ZIP files",
+            "List files", "Accunts management", "Cim", "Process management",
+            "Service management", "Windows Log", "TCPIP management", "ZIP files",
+            "Antivirus", "Office 365", "Azure")]
+        $Topic
     )
     process {
-        if ($idea -or $powershell -or $python -or $ccna -or $finished -or $writer -or
-            $calc -or $youtube -or $books) {
-            $new_pscustobj = [PSCustomObject]@{
-                'Datum'                  = "$(Get-Date -Format FileDate)"
-                'Idéer till nya projekt' = "$idea"
-                'PowerShell projekt'     = "$powershell"
-                'Python projekt'         = "$python"
-                'CCNA projektet'         = "$ccna"
-                'Slutförda projekt'      = "$finished"
-                'LibreOffice Writer'     = "$writer"
-                'LibreOffice Calc'       = "$calc"
-                'Youtube'                = "$youtube"
-                'Böcker'                 = "$books"
-            }
-            $new_pscustobj | Export-Csv $HOME\todo.csv -Force -Append
+        if (Test-Path -Path "$env:USERPROFILE\Documents\PowerShell\admincmdlets.csv" -PathType Leaf) {
+            $pycsvfile = Import-Csv -Path "$env:USERPROFILE\Documents\PowerShell\admincmdlets.csv"
+            $pycsvfile | Select-Object $Topic -Unique -ErrorAction Ignore
         }
         else {
-            if (Test-Path -Path $HOME\todo.csv) {
-                Import-Csv -Path $HOME\todo.csv
-            }
-            else {
-                Write-Error "$HOME\todo.csv måste skapas först."
-            }
+            Write-Error -Message '"admincmdlets.csv" finns ej.' -Category ObjectNotFound
         }
     }
 }
 
-
-function Get-AllCmdlets {
-    $OutputEncoding = [console]::OutputEncoding
-    $OutputEncoding.ASCIIENCODING
-    Get-Command -CommandType Cmdlet, Function | Format-Wide -Property Name -Column 3 |
-    more
-}
-
-function Get-AdminCmdlets {
-    $ProgressPreference = 'SilentlyContinue'
-    $core_cmdlets = @(Get-Command -Noun *PSSession* | Select-Object Name -ExpandProperty Name)
-    $loca_cmdlets = @(
-        Get-Command -Module Microsoft.PowerShell.LocalAccounts |
-        Select-Object Name -ExpandProperty Name)
-    $cim_cmdlets = @(
-        'Get-CimInstance -ClassName Win32_Service | Format-Table Name, State, Started, Status, StartMode',
-        'Get-CimInstance -ClassName Win32_OperatingSystem | select LastBootUpTime')
-    $computer_par = @(Get-Command -CommandType Cmdlet -ParameterName 'ComputerName' |
-        Select-Object Name -ExpandProperty Name)
-    $proc_cmdlets = @(
-        '(Get-Process -Name vlc).Kill()', 'Stop-Process -Name "vlc"',
-        'Get-Process | Where-Object Path -Match "Avira", | select name, id, path',
-        'Get-Process -Name vlc | select Id, StartTime',
-        'Get-Process | Out-GridView -PassThru | Stop-Process',
-        'Get-Process | Out-String | Set-Clipboard')
-    $srv_cmdlest = @(
-        'Get-Service | Where-Object DisplayName -Match "Avira"',
-        'Get-Service workstation | select  Username, Starttype, BinaryPathName',
-        'Get-Service | where {$_.Status -eq "Running" -and $_.Name -like "w*"}',
-        'Set-Service -Name AdobeARMservice -StartupType Disabled')
-    $tcpip_cmdlets = @(
-        'Test-Connection www.google.com', 'Test-Connection www.google.com -Traceroute',
-        'Get-NetIPAddress', 'Resolve-DnsName', 'Get-NetTCPConnection', 'Get-DnsClient',
-        'Clear-DnsClientCache', 'Disable-NetAdapter -Name "Adapter Name"')
-    $getitems_cmdlets = @(
-        'dir HKLM:\SOFTWARE\',
-        'dir .\Users\Admin\Install\*.exe | select VersionInfo -ExpandProperty VersionInfo',
-        'Get-ChildItem -Name Avira* | Get-ItemProperty -Exclude SilentlyContinue | select -ExpandProperty VersionInfo',
-        'dir Cert:\LocalMachine\Root | ? NotAfter -LT (Get-Date).AddDays(300) | select Subject, NotAfter',
-        'Get-Item bonux.txt'
-        'dir -Path *.mp4 -Recurse -Filter *powershell* | select FullName > all_ps_mp4.txt')
-
-
-    [PSCustomObject]@{
-        'Core'                         = $core_cmdlets
-        'Management'                   = @('Rename-Computer', 'Restart-Computer')
-        'LocalAccounts'                = $loca_cmdlets
-        'CIM instances'                = $cim_cmdlets
-        'ParameterName "ComputerName"' = $computer_par
-        'Get items'                    = $getitems_cmdlets
-        'Windows Log'                  = 'Get-WinEvent -ListLog * | ? isEnabled | Out-GridView'
-        'Processer'                    = $proc_cmdlets
-        'Services'                     = $srv_cmdlest
-        'Minmum, maximum, sum'         = 'dir | Measure-Object'
-        'Looping'                      = '1..20 | ForEach-Object {Write-Host "Försök nr $_. $(vinst) "}'
-        'Rename property'              = '@{Name = ""; Expression = {} }'
-        'Run variable'                 = 'Invoke-Expression $string'
-        'Run cmdlets/*.ps1 file'       = 'Invoke-Command -ComputerName x -ScriptBlock {ipconfig /release}'
-        'Open a file'                  = 'Invoke-Item bonus.pdf'
-        'Run file'                     = '& notepad.exe'
-        'TCPIP'                        = $tcpip_cmdlets
-        'Windows Defender update'      = 'Update-MpSignature'
-        'Windows Defender scan'        = 'Start-MpWDOScan'
-        'Trim'                         = '$trim_char.ToString().Trim(".json")'
-        'Sort'                         = '1..10 | Sort-Object -Descending'
-        'Azure'                        = @('New-AzVM', 'Get-AzVM', 'Stop-AzVM', 'Start-AzVM', 'Restart-AzVM')
-        'Office 365'                   = ''
-        'Remote cmdlets'               = @('$credentials = Get-Credential',
-                                         '$PSSessionOption = New-PSSessionOption -SkipCACheck',
-                                         'Enter-PSSession -ComputerName xxx -Credential $credentials -SessionOption $PSSessionOption -UseSSL')
-        'Zip files'                    = @('Compress-Archive -Path C:\Demo\* -DestinationPath archive.zip',
-                                           'Compress-Archive -Path *.log -DestinationPath',
-                                           'Expand-Archive -Path archive.zip -DestinationPath')
-        'Shutdown'                     = 'shutdown /s'
-        'Hibernate'                    = 'shutdown /h'
-        'Reboot'                       = 'shutdown /r'
-        'Reboot (with comment)'        = 'shutdown /r /c "comment"'
-        'IP Configuration'             = 'ipconfig /all'
-        'Connect to network share'     = 'net use B: \\FPS01\users'
-        'Add computer to domain'       = 'Add-Computer -DomainName Domain01 -Server Domain01\DC01 -PassThru -Verbose'
-        'Aktivitetshanteraren'         = 'Taskmgr.exe'
+function Get-Py3QuickRef {
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet("Strings",	"Lists", "Tuples", "Dictionaries", "Sets",	
+            "Comparisons", "Math", "Loops", "List comprehension", "Generators",
+            "Functions", "Printing", "File access", "Input", "Error streams", 
+            "Exceptions", "OOP", "Debugging", "JSON", "Databases", "SYS", "OS", 
+            "Boilerplate", "Builtins", "Modules", "Jupyterlab shortcuts", "Ipython", 
+            "Ugly code", "argparse", "pathlib",	"calendar",	"Software design principle",
+            "PEP8")]
+        $Topic
+    )
+    process {
+        if (Test-Path -Path "$env:USERPROFILE\Documents\PowerShell\py3quickref.csv" -PathType Leaf) {
+            $pycsvfile = Import-Csv -Path "$env:USERPROFILE\Documents\PowerShell\py3quickref.csv"
+            $pycsvfile | Select-Object $Topic -Unique -ErrorAction Ignore
+        }
+        else {
+            Write-Error -Message '"py3quickref.csv" finns ej.' -Category ObjectNotFound
+        }
     }
 }
 
 function Get-CimWin32Classes {
-    $OutputEncoding = [console]::OutputEncoding
-    $OutputEncoding.ASCIIENCODING
     Get-CimClass -ClassName win32_* | Where-Object CimClassName -NotLike win32_perf* |
-    Format-Wide CimClassName -Column 3 | more
+    Format-Wide -Property CimClassName -Column 3
 }
 
 function Invoke-Evim {
@@ -401,35 +395,14 @@ function Invoke-Evim {
                     throw "Fel filändelse!"
                 }
             })]
-        [System.IO.FileInfo]$file
+        [System.IO.FileInfo]$File
     )
 
     if (Test-Path -Path "C:\Program Files\VIM") {
-        vim -y -n $file
+        vim -y -n $File
     }
     else {
         Write-Error "Hittade inte Vim Directory. Är Vim installerad?"
-    }
-}
-
-function Get-Py3QuickRef {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateSet("Strings", "Lists", "Tuples", "Dictionaries", "Sets",
-            "Comparisons", "Loops", "List comprehension", "Generators", "Functions",
-            "Printing", "File access", "Input", "Error streams", "Other file operations",
-            "Exceptions", "OOP", "JSON", "Databases", "SYS", "OS", "Boilerplate",
-            "Jupyterlab shortcuts", "IPython shortcuts", "Builtins")]
-        $topic
-    )
-    Set-Location $env:USERPROFILE\Documents\PowerShell\
-    if (Test-Path -Path py3quickref.csv) {
-        $pycsvfile = Import-Csv -Path .\py3quickref.csv
-        $pycsvfile | Select-Object $topic -Unique
-
-    }
-    else {
-        Write-Error -Message "Filen finns ej."
     }
 }
 
@@ -437,13 +410,13 @@ function Get-CCNAQuickRef {
     param (
         [Parameter(Mandatory)]
         [ValidateSet("TCP/IP", "Ethernet", "IP Routing", "Cisco IOS", "IPv4 Subnetting",
-         	"OSPF", "IP Version 6", "Wireless Networks")]
-        $topic
+            "OSPF", "IP Version 6", "Wireless Networks")]
+        $Topic
     )
     Set-Location $env:USERPROFILE\Documents\PowerShell\
     if (Test-Path -Path CCNAquickref.csv) {
         $CCNAcsvfile = Import-Csv -Path .\CCNAquickref.csv
-        $CCNAcsvfile | Select-Object $topic -Unique
+        $CCNAcsvfile | Select-Object $Topic -Unique
 
     }
     else {
@@ -452,26 +425,33 @@ function Get-CCNAQuickRef {
 }
 
 function Get-SysInfo {
-    $ProgressPreference = 'SilentlyContinue'
-    Get-ComputerInfo | Select-Object @{Name = "Datortillverkare";
-    Expression = { $_.CsManufacturer } },
-    @{Name = "Dator serienummer"; Expression = { $_.CsModel } },
-    @{Name = "Windows-Utgåva"; Expression = { $_.WindowsProductName } },
-    @{Name = "Produkt-ID"; Expression = { $_.WindowsProductId } },
-    @{Name = "Windows version"; Expression = { $_.OsVersion } },
-    @{Name = "Windows build"; Expression = { $_.WindowsVersion } },
-    @{Name = "BIOS"; Expression = { $_.BiosManufacturer } },
-    @{Name = "BIOS Version"; Expression = { $_.BiosName, $_.BiosVersion } }
+    param (
+        [switch]$TcpIp = $false
+    )
+    begin {
+        $ProgressPreference = 'SilentlyContinue'
+    }
+    process {
+        if ($TcpIp.IsPresent) {
+            Get-ComputerInfo | Select-Object CsNetworkAdapters -ExpandProperty CsNetworkAdapters |
+            Where-Object { $_.ConnectionStatus -eq "Connected" }  |
+            Format-List Description, ConnectionStatus, IPAddresses, DHCPServer
+        }
+        else {
+            Get-ComputerInfo | Select-Object @{
+                Name = "Datortillverkare"; Expression = { $_.CsManufacturer } },
+                @{Name = "Dator serienummer"; Expression = { $_.CsModel } },
+                @{Name = "Windows-Utgåva"; Expression = { $_.WindowsProductName } },
+                @{Name = "Produkt-ID"; Expression = { $_.WindowsProductId } },
+                @{Name = "Windows version"; Expression = { $_.OsVersion } },
+                @{Name = "Windows build"; Expression = { $_.WindowsVersion } }
+                # @{Name = "BIOS"; Expression = { $_.BiosManufacturer } },
+                # @{Name = "BIOS Version"; Expression = { $_.BiosName, $_.BiosVersion } }
+            }
+    }
 }
 
-function Get-IPAddress {
-    $ProgressPreference = 'SilentlyContinue'
-    Get-ComputerInfo | Select-Object CsNetworkAdapters -ExpandProperty CsNetworkAdapters |
-    Where-Object { $_.ConnectionStatus -eq "Connected" } |
-    Format-List Description, ConnectionID, IPAddresses
-}
-
-Function Get-Ps7QuickRef {
+function Get-Ps7QuickRef {
     [PSCustomObject]@{
         # Mindre viktiga reserverade ord: exit, workflow, inlineScript
         "begin"                           = " "
@@ -502,13 +482,12 @@ Function Get-Ps7QuickRef {
         "Until"                           = " "
         "while"                           = 'while ($x -ne (Get-Random 10))'
         "try"                             = 'try { Get-Item bonus.txt -ErrorAction Stop } catch { "Filen finns inte." }'
-        "Range operator"                  = '1..10'
+        "ForEach-Object"                  = '1..20 | ForEach-Object { Write-Host "Försök nr $_. $(vinst) " }'
         "Expresion evaluetion"            = '$(exp)'
         "Here string"                     = "@'multiline string'@"
         'Increment value'                 = '++'
         'Decrement'                       = '--'
         'String matches'                  = '-like'
-        'String not matches'              = '-notlike'
         'String matches regex'            = '-match'
         'Reference a value in collection' = '-contaians'
         'Split string'                    = '-split'
@@ -517,12 +496,24 @@ Function Get-Ps7QuickRef {
         'Array elements'                  = '$x[4..12]'
         'Last elements'                   = '$y[-1]'
         'Last 4 elements'                 = '$z[-4..-1]'
+        'Index pos 1,4, and 6 through 9'  = '$arr[1,4+6..9]'
         'Array'                           = '$a = @("a", "b")'
         'Add X to array'                  = '$a += "X"'
         'Result to array'                 = '@(Get-Process)'
         'Reverse an array'                = '[array]::Reverse($x)'
         'Associative array'               = '$assoc = @{one=1 ; two=2}'
+        'Ordered associative array'       = '$assoc2[ordered]@{}'
         'Add member'                      = '$assoc["three"] = 3'
+        'Convert to PSCust'               = '$assoc2 = [PSCustomObject]$assoc'
+        'Trim'                            = '$trim_char.ToString().Trim(".json")'
+        'Sort'                            = '1..10 | Sort-Object -Descending'
+        'PSCustomObject'                  = '$myObject = [PSCustomObject]@{}'
+        'Add member to obj'               = '$myObject | Add-Member'
+        'Remove obj'                      = '$myObject.psobject.Properties.Remove()'
+        'Convert to JSON'                 = '$myObject | ConvertTo-Json > file.json'
+        'Import from JSON'                = '$myObjectImport = Get-Content file.json | ConvertFrom-Json'
+        'Add member to PSCust'            = '$myObject | Add-Member -MemberType NoteProperty -Name X -Value X'
+        'Remove member from PSCust'       = '$myObject.psobject.properties.remove("X")'
     }
 }
 
@@ -548,5 +539,6 @@ function Get-Win10QuickRef {
 }
 
 Clear-Host
+Set-WindowTitle
 Get-ProjectFolder
 Clear-TmpFolder
