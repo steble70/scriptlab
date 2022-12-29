@@ -5,6 +5,7 @@
 #### [Stefan Bleckos](https://twitter.com/minnesbilder) Python/PowerShell sajt 
 ##### Klicka gärna på länkarna ovan för titta närmare på källkoden.
 
+##### PowerShell kompetenser
 ```powershell
 function Get-ChangeLog {
     [CmdletBinding()]
@@ -33,9 +34,7 @@ function Get-ChangeLog {
     }
 }
 ```
-
----
-
+##### Python kompetenser
 ```python
 secupass.py - Genererar "säkra" lösenord
 Version 0.1 av Stefan Blecko
