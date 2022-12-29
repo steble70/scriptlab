@@ -6,7 +6,7 @@
 ##### Klicka gärna på länkarna ovan för titta närmare på källkoden.
 
 
-##### Python kompetenser
+### Python kompetenser
 ```python
 secupass.py - Genererar "säkra" lösenord
 Version 0.1 av Stefan Blecko
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     main()
 ```
 
-##### PowerShell kompetenser
+### PowerShell kompetenser
 ```powershell
 function Get-ChangeLog {
     [CmdletBinding()]
