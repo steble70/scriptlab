@@ -1,39 +1,11 @@
 ![PowerShell-Python Logo](/Banner.jpg)
 
 
-## Välkommen till Scriptlab
+## **Välkommen till Scriptlab**
 #### [Stefan Bleckos](https://twitter.com/minnesbilder) Python/PowerShell sajt 
 ##### Klicka gärna på länkarna ovan för titta närmare på källkoden.
 
-##### PowerShell kompetenser
-```powershell
-function Get-ChangeLog {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)]
-        [string]$Project,
-        [string]$Topic
-    )
-    process {
-        if ($Topic) {
-            $new_pscustobj = [PSCustomObject]@{
-                'Datum'     = "$(Get-Date -Format FileDate)"
-                'Changelog' = "$Topic"
-            }
-            $new_pscustobj | 
-            Export-Csv "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv" -Force -Append
-        }
-        else {
-            if (Test-Path -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv") {
-                Import-Csv -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv"
-            }
-            else {
-                Write-Error "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv måste skapas först."
-            }
-        }
-    }
-}
-```
+
 ##### Python kompetenser
 ```python
 secupass.py - Genererar "säkra" lösenord
@@ -112,4 +84,34 @@ def main():
 
 if __name__ == '__main__':
     main()
+```
+
+##### PowerShell kompetenser
+```powershell
+function Get-ChangeLog {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$Project,
+        [string]$Topic
+    )
+    process {
+        if ($Topic) {
+            $new_pscustobj = [PSCustomObject]@{
+                'Datum'     = "$(Get-Date -Format FileDate)"
+                'Changelog' = "$Topic"
+            }
+            $new_pscustobj | 
+            Export-Csv "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv" -Force -Append
+        }
+        else {
+            if (Test-Path -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv") {
+                Import-Csv -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv"
+            }
+            else {
+                Write-Error "$HOME\Desktop\$PSprojfoldername\$Project\docs\changelog.csv måste skapas först."
+            }
+        }
+    }
+}
 ```
