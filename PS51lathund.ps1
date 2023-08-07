@@ -1,7 +1,8 @@
 <#
 PowerShell profile
-Version 0.3.2
+Version 0.3.2.1
 © 2023 av Stefan Blecko
+---
 
 Powershell Shortcuts
 F1      ShowCommandHelp
@@ -16,7 +17,7 @@ $host.PrivateData.VerboseBackgroundColor = 'Black'
 $host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
 $host.UI.RawUI.BackgroundColor = 'Black'
 
-Set-Variable $HOME C:\Users\$env:USERNAME
+Set-Variable $HOME $env:USERPROFILE  
 $PSprojfoldername = "POPYS"
 
 
@@ -121,6 +122,35 @@ function Get-ChangeLog {
     }
 }
 
+function Get-GoogleThis  {
+    [CmdletBinding()]
+    param (
+        [string]$Topic,
+        [switch]$EraseData
+    )
+    process {
+        if ($EraseData.IsPresent) {
+            Remove-Item "$HOME\Desktop\$PSprojfoldername\junk.csv" -Force -ErrorAction SilentlyContinue
+        }
+        elseif ($Topic) {
+            $new_pscustobj = [PSCustomObject]@{
+                'Datum'     = "$(Get-Date -Format FileDate)"
+                'Ämne' = "$Topic"
+            }
+            $new_pscustobj | 
+            Export-Csv "$HOME\Desktop\$PSprojfoldername\junk.csv" -Force -Append
+        }
+        else {
+            if (Test-Path -Path "$HOME\Desktop\$PSprojfoldername\junk.csv") {
+                Import-Csv -Path "$HOME\Desktop\$PSprojfoldername\junk.csv"
+            }
+            else {
+                Write-Error "$HOME\Desktop\$PSprojfoldername\junk.csv måste skapas först."
+            }
+        }
+    }
+}
+
 function Get-PSConHelp {
     Get-PSReadlineKeyHandler -Bound | Select-Object Function, Key |
     Where-Object { $_.Function -notmatch "DigitArgument" }
@@ -146,7 +176,7 @@ function Get-RandomCmdlet {
 
 function Get-StackOverflowHelp {
     param (
-        [array]$Topic = "powershell"
+        [array]$Topic = "PowerShell"
     )
     process {
         Start-Process "https://stackoverflow.com/questions/tagged/$Topic"
@@ -210,7 +240,8 @@ function Get-VScodeShortcuts {
     [PSCustomObject]@{
         "Indent/Outdent"                   = "Ctrl + Å/´"
         "Maximize panel size"              = "Ctrl + Alt + Ö"
-        "Debug"                            = "Ctrl+ Shift + D"
+        "Debug"                            = @("Ctrl+ Shift + D")
+        "Debugging module"                 = "Import-Module MyModule.psm1"
         "Run script"                       = "Ctrl + F5"
         "Run selection"                    = "F8"
         "Insert snippets"                  = "Ctrl + Alt + J"
@@ -264,7 +295,7 @@ function Get-ObsidianQuickRef {
         'Task list 2'          = '- [x]'
         'Strikethrough'        = '~~text~~'
         'Highlighting'         = '==text=='
-        'Comments'             = '%%The is a comment%%'
+        'Comments'             = '%%This is a comment%%'
         'Footnotes'            = '[^1]'
         'Horizontal bar'       = '---'
         'Tables'               = 'First Header | Second Header'
@@ -316,7 +347,7 @@ function Get-StudyTips {
     Write-Warning "Inte implementerat" -InformationAction Continue
 }
 
-function Get-WhatsNew {
+function Get-WhatsNew {   
     param (
         [ValidateSet("Python", "PowerShell", "Obsidian", "VSCode")]
         [string]$Topic = "Python"
@@ -332,7 +363,7 @@ function Get-WhatsNew {
             Start-Process "https://github.com/microsoft/vscode/releases"
         }
         else {
-            Start-Process "https://forum.obsidian.md/c/announcements/13"
+            Start-Process "https://github.com/obsidianmd/obsidian-releases/releases"
         }
     }
 }
@@ -344,12 +375,11 @@ function Set-WindowTitle {
     )
     process {
         $host.UI.RawUI.WindowTitle = "$Title"
-    }
-    
+    }    
 }
 
 function Set-PredictiveIntelliSense {
-    # F.o.m PowerShell 7.3 predictiveIntelliSense aktiverat som default
+    # F.o.m PowerShell 7.3 är "predictiveIntelliSense" aktiverat som default
     param (
         [switch]$Off = $false
     )
@@ -410,8 +440,14 @@ function Get-Py3QuickRef {
 }
 
 function Get-CimWin32Classes {
-    Get-CimClass -ClassName win32_* | Select-Object CimClassName |
-    Where-Object CimClassName -NotLike win32_perf*
+    [CmdletBinding()]
+    param (
+        [string]$SearchFor = "*"
+    )
+    process {
+        Get-CimClass -ClassName win32_* | Select-Object CimClassName |
+        Where-Object {$_.CimClassName -Like $SearchFor -and $_.CimClassName -notlike "Win32_Perf*"}
+    }
 }
 
 function Get-VimQuickRef {
@@ -456,6 +492,7 @@ function Get-VimQuickRef {
         'Go to the next tab'                  = 'gt'
         'Search'                              = '/', '?'
         'Run Python code inside vim'          = ':! clear; python3 %'
+        'Invoke terminal'                     = ':term'
     }
 }
 
@@ -598,4 +635,3 @@ Clear-TmpFolder
 Get-ProjectFolder
 Get-RandomCmdlet
 New-Alias -Name "touch" -Value New-Item -Option AllScope -Description "Create new file."
-
