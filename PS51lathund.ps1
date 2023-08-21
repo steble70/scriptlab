@@ -1,6 +1,6 @@
 <#
 PowerShell profile
-Version 0.3.2.1
+Version 0.3.2.2
 © 2023 av Stefan Blecko
 ---
 
@@ -18,33 +18,31 @@ $host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
 $host.UI.RawUI.BackgroundColor = 'Black'
 
 Set-Variable $HOME $env:USERPROFILE  
-$PSprojfoldername = "POPYS"
+$projfolder = "POPYS"
+$path2projfolder = "$env:USERPROFILE\Desktop\$projfolder"
 
-
-if (Test-Path -Path "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername") {
+if (Test-Path -Path $path2projfolder) {
 }
 else {
-    New-Item -Path "C:\Users\$env:USERNAME\Desktop\" -Name $PSprojfoldername `
+    New-Item -Path "$env:USERPROFILE\Desktop\" -Name $projfolder `
         -ItemType "directory" | Out-Null
-    New-Item -ItemType File "C:\Users\$env:USERNAME\Desktop\$PSprojfoldername\untitled1.ps1" | Out-Null
+    New-Item -ItemType File "$path2projfolder\untitled1.ps1" | Out-Null
 }
 
-New-PSDrive -Name $PSprojfoldername -PSProvider FileSystem -Root `
-    "$env:USERPROFILE\Desktop\$PSprojfoldername" -Description `
-    "Välkommen till skriptlådan." | Out-Null
+New-PSDrive -Name $projfolder -PSProvider FileSystem -Root $path2projfolder `
+-Description "Välkommen till skriptlådan." | Out-Null
 
 function Get-ProjectFolder {
-    Set-Location ($PSprojfoldername + ":\")
-    Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb -Recurse | 
-    Select-Object @{
-        Name = "Skript"; Expression = { $_.Name } 
-    },
+    Set-Location ($projfolder + ":\")
+    Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb `
+    -Recurse | Select-Object @{ Name = "Skript"; Expression = { $_.Name } },
     @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | 
     Sort-Object "Senast ändrad" -Descending | Out-Host 
     if (Test-Path -Path D:\INSTALL\Git\PortableGit\bin\git.exe -PathType Leaf) {
         $Env:PATH += ";D:\INSTALL\Git\PortableGit\bin"
         function Global:prompt {
-            (Write-Host "[GIT]:" -NoNewline -ForegroundColor DarkYellow -BackgroundColor DarkBlue) +
+            (Write-Host "[GIT]:" -NoNewline -ForegroundColor DarkYellow `
+            -BackgroundColor DarkBlue) + 
             " $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
             return " "
         }
@@ -55,17 +53,19 @@ function Get-ProjectFolder {
 }
 
 function Get-AllProjectFolder {
-    Set-Location ($PSprojfoldername + ":\")
-    Get-ChildItem -Directory | Where-Object { $_.Name -notlike '.*' -and $_.Name -notlike '__*__' } | 
-    Sort-Object -Property CreationTime -Descending | 
-    Select-Object @{Name = "Projekt skapade"; Expression = { $_.Name } } 
+    Set-Location ($projfolder + ":\")
+    Get-ChildItem -Directory | Where-Object { $_.Name -notlike '.*' -and `
+    $_.Name -notlike '__*__' } | Sort-Object -Property CreationTime -Descending | 
+    Select-Object @{Name = "Projekt skapade"; Expression = { $_.Name } }       
 }
 
 function Set-DefaultPrompt {
     # function Global:prompt {"PS [$env:USERNAME]$PWD> "}
     function Global:prompt {
-        "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+        "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * `
+        ($nestedPromptLevel + 1)) "
     }
+    Set-Location "$env:USERPROFILE\Desktop\$projfolder"
 }
 
 function New-ProjektFolder {
@@ -75,15 +75,15 @@ function New-ProjektFolder {
         [string]$Newproject
     )
     process {
-        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\" -Name $Newproject `
+        New-Item -Path $path2projfolder -Name $Newproject `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "temp" `
+        New-Item -Path "$path2projfolder\$Newproject\" -Name "temp" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "docs" `
+        New-Item -Path "$path2projfolder\$Newproject\" -Name "docs" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "$Newproject" `
+        New-Item -Path "$path2projfolder\$Newproject\" -Name "$Newproject" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$env:USERPROFILE\Desktop\$PSprojfoldername\$Newproject\" -Name "README.md" `
+        New-Item -Path "$path2projfolder\$Newproject\" -Name "README.md" `
             -ItemType File | Select-Object FullName -ExpandProperty FullName 
         Set-Location -Path "POPYS:\$Newproject\temp"
     }
@@ -109,20 +109,20 @@ function Get-ChangeLog {
                 'Changelog' = "$Topic"
             }
             $new_pscustobj | 
-            Export-Csv "$HOME\Desktop\$PSprojfoldername\$Project\docs\$changelogname" -Force -Append
+            Export-Csv "$path2projfolder\$Project\docs\$changelogname" -Force -Append
         }
         else {
-            if (Test-Path -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\$changelogname") {
-                Import-Csv -Path "$HOME\Desktop\$PSprojfoldername\$Project\docs\$changelogname"
+            if (Test-Path -Path "$path2projfolder\$Project\docs\$changelogname") {
+                Import-Csv -Path "$path2projfolder\$Project\docs\$changelogname"
             }
             else {
-                Write-Error "$HOME\Desktop\$PSprojfoldername\$Project\docs\$changelogname måste skapas först."
+                Write-Error "$path2projfolder\$Project\docs\$changelogname måste skapas först."
             }
         }
     }
 }
 
-function Get-GoogleThis  {
+function Get-ToDo  {
     [CmdletBinding()]
     param (
         [string]$Topic,
@@ -130,22 +130,22 @@ function Get-GoogleThis  {
     )
     process {
         if ($EraseData.IsPresent) {
-            Remove-Item "$HOME\Desktop\$PSprojfoldername\junk.csv" -Force -ErrorAction SilentlyContinue
+            Remove-Item "$path2projfolder\junk.csv" -Force -ErrorAction SilentlyContinue
         }
         elseif ($Topic) {
-            $new_pscustobj = [PSCustomObject]@{
+            $create_csv = [PSCustomObject]@{
                 'Datum'     = "$(Get-Date -Format FileDate)"
                 'Ämne' = "$Topic"
             }
-            $new_pscustobj | 
-            Export-Csv "$HOME\Desktop\$PSprojfoldername\junk.csv" -Force -Append
+            $create_csv | 
+            Export-Csv "$path2projfolder\junk.csv" -Force -Append
         }
         else {
-            if (Test-Path -Path "$HOME\Desktop\$PSprojfoldername\junk.csv") {
-                Import-Csv -Path "$HOME\Desktop\$PSprojfoldername\junk.csv"
+            if (Test-Path -Path "$path2projfolder\junk.csv") {
+                Import-Csv -Path "$path2projfolder\junk.csv"
             }
             else {
-                Write-Error "$HOME\Desktop\$PSprojfoldername\junk.csv måste skapas först."
+                Write-Error "$path2projfolder\junk.csv måste skapas först."
             }
         }
     }
@@ -212,9 +212,9 @@ function Clear-PSReadlineHist {
 }
 
 function Clear-IpyHistoryData {
-    # En samling funktioner till jupyterlab
+    # En samling funktioner till jupyterlab kommer finns här.
     param (
-        [System.IO.FileInfo]$IpyHistData = "$env:USERPROFILE\.ipython\profile_clipro\history.sqlite"
+        [System.IO.FileInfo]$IpyHistData = "$HOME\.ipython\profile_clipro\history.sqlite"
     )
     Remove-Item $IpyHistData -Force -ErrorAction SilentlyContinue 
 }
@@ -286,7 +286,7 @@ function Get-ObsidianQuickRef {
         'Images'               = '![Tolkien](https://lordoftherings.com/tolkien.jpg)'
         'Resizing images'      = '![Tolkien|100](https://lordoftherings.com/tolkien.jpg'
         'YouTube embed'        = '![](https://www.youtube.com/...)'
-        'External links'       = '[Obsidian help](http:obsidian.md'
+        'External links'       = '[Obsidian help](http:obsidian.md)'
         'Obsidian URI links'   = '[Link to node](obsidian://)'
         'Blockquotes'          = '>'
         'Inline code'          = '`text`'
@@ -298,7 +298,8 @@ function Get-ObsidianQuickRef {
         'Comments'             = '%%This is a comment%%'
         'Footnotes'            = '[^1]'
         'Horizontal bar'       = '---'
-        'Tables'               = 'First Header | Second Header'
+        'term'                 = ': definition'
+        'Tables'               = '| First Header | Second Header |'
         'Open command palette' = 'Ctrl + P'
         'Delete paragraph'     = 'Ctrl + D'
         'Follow link'          = 'Alt + Enter'
@@ -499,8 +500,8 @@ function Get-VimQuickRef {
 function Get-CCNAQuickRef {
     param (
         [Parameter(Mandatory)]
-        [ValidateSet("TCP/IP", "Ethernet", "IP Routing", "Cisco IOS", "IPv4 Subnetting",
-            "OSPF", "IP Version 6", "Wireless Networks")]
+        [ValidateSet("TCP/IP", "Ethernet", "IP Routing", "Cisco IOS", 
+        "IPv4 Subnetting", "OSPF", "IP Version 6", "Wireless Networks")]
         $Topic
     )
     Set-Location $env:USERPROFILE\Documents\PowerShell\
@@ -523,8 +524,8 @@ function Get-SysInfo {
     }
     process {
         if ($TcpIp.IsPresent) {
-            Get-ComputerInfo | Select-Object CsNetworkAdapters -ExpandProperty CsNetworkAdapters |
-            Where-Object { $_.ConnectionStatus -eq "Connected" } |
+            Get-ComputerInfo | Select-Object CsNetworkAdapters -ExpandProperty `
+            CsNetworkAdapters | Where-Object { $_.ConnectionStatus -eq "Connected" } |
             Format-List Description, ConnectionStatus, IPAddresses, DHCPServer
         }
         else {
@@ -606,6 +607,8 @@ function Get-Ps7QuickRef {
         'Import from JSON'                = '$myObjectImport = Get-Content file.json | ConvertFrom-Json'
         'Add member to PSCust'            = '$myObject | Add-Member -MemberType NoteProperty -Name X -Value X'
         'Remove member from PSCust'       = '$myObject.psobject.properties.remove("X")'
+        '[Parameter()]'                   = '[ValidateSet("X", "Y", "Z")]', '[ValidateRange()]',
+                                            '[ValidateScript({})]'
     }
 }
 
@@ -630,8 +633,20 @@ function Get-Win10QuickRef {
     }
 }
 
+function Get-NoahideLaws {
+    [PSCustomObject]@{
+        "Not to worship idols"                        = ""
+        "Not to curse God"                            = ""
+        "Not to commit murder"                        = ""
+        "Not to commit adultery or sexual immorality" = ""
+        "Not to steal"                                = ""
+        "Not to eat flesh torn from a living animal"  = ""
+        "To establish courts of justice"              = ""
+    }
+}
+
 Clear-Host
 Clear-TmpFolder
 Get-ProjectFolder
 Get-RandomCmdlet
-New-Alias -Name "touch" -Value New-Item -Option AllScope -Description "Create new file."
+New-Alias -Name "touch" -Value New-Item -Description "Create new file."
