@@ -34,8 +34,8 @@ New-PSDrive -Name $projfolder -PSProvider FileSystem -Root $path2projfolder `
 
 function Get-ProjectFolder {
     Set-Location ($projfolder + ":\")
-    Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb `
-    -Recurse | Select-Object @{ Name = "Skript"; Expression = { $_.Name } },
+    Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb, `
+    todo.csv -Recurse | Select-Object @{ Name = "Skript"; Expression = { $_.Name } },
     @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | 
     Sort-Object "Senast ändrad" -Descending | Out-Host 
     if (Test-Path -Path D:\INSTALL\Git\PortableGit\bin\git.exe -PathType Leaf) {
@@ -43,7 +43,8 @@ function Get-ProjectFolder {
         function Global:prompt {
             (Write-Host "[GIT]:" -NoNewline -ForegroundColor DarkYellow `
             -BackgroundColor DarkBlue) + 
-            " $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+            " $($executionContext.SessionState.Path.CurrentLocation)$( `
+                '>' * ($nestedPromptLevel + 1)) "
             return " "
         }
     }
@@ -62,8 +63,8 @@ function Get-AllProjectFolder {
 function Set-DefaultPrompt {
     # function Global:prompt {"PS [$env:USERNAME]$PWD> "}
     function Global:prompt {
-        "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * `
-        ($nestedPromptLevel + 1)) "
+        "PS $($executionContext.SessionState.Path.CurrentLocation)$( `
+            '>' * ($nestedPromptLevel + 1)) "
     }
     Set-Location "$env:USERPROFILE\Desktop\$projfolder"
 }
@@ -130,7 +131,7 @@ function Get-ToDo  {
     )
     process {
         if ($EraseData.IsPresent) {
-            Remove-Item "$path2projfolder\junk.csv" -Force -ErrorAction SilentlyContinue
+            Remove-Item "$path2projfolder\todo.csv" -Force -ErrorAction SilentlyContinue
         }
         elseif ($Topic) {
             $create_csv = [PSCustomObject]@{
@@ -138,11 +139,11 @@ function Get-ToDo  {
                 'Ämne' = "$Topic"
             }
             $create_csv | 
-            Export-Csv "$path2projfolder\junk.csv" -Force -Append
+            Export-Csv "$path2projfolder\todo.csv" -Force -Append
         }
         else {
-            if (Test-Path -Path "$path2projfolder\junk.csv") {
-                Import-Csv -Path "$path2projfolder\junk.csv"
+            if (Test-Path -Path "$path2projfolder\todo.csv") {
+                Import-Csv -Path "$path2projfolder\todo.csv"
             }
             else {
                 Write-Error "$path2projfolder\junk.csv måste skapas först."
@@ -169,8 +170,8 @@ function Get-RandomCmdlet {
         $Num = 1 
     )
     process {
-        @(Get-Alias | Select-Object @{Name = "Dagens CmdLet"; Expression = { $_.DisplayName } }) | 
-        Get-Random -Count $Num
+        @(Get-Alias | Select-Object @{Name = "Dagens CmdLet"; Expression = { `
+            $_.DisplayName } }) | Get-Random -Count $Num
     }
 }
 
@@ -207,7 +208,8 @@ function Clear-TmpFolder {
 }
 
 function Clear-PSReadlineHist {
-    Clear-Content $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt -Force
+    $psconhist = "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+    Clear-Content -Path $psconhist -Force
     Clear-History
 }
 
@@ -264,7 +266,7 @@ function Get-VScodeShortcuts {
 function Get-GitQuickRef {
     [PSCustomObject]@{
         'Create repositories' = 'git init', 'git clone [url]'
-        'Branches'            = 'git branch [branch-name]', 'git checkout [branch-name]',
+        'Branches'            = 'git branch [branch-name]', 'git checkout',
                                 'git merge [branch]', 'git branch -d [branch-name]'
         'Synchronize changes' = 'git fetch', 'git merge', 'git push', 'git pull'
         'Make changes'        = 'git status', 'git log', 'git log --follow [file]',
@@ -283,8 +285,8 @@ function Get-ObsidianQuickRef {
         'Bold, Italic'         = '_**This is bold Italic text**_'
         'Lists 1'              = '-'
         'Lists 2'              = '1.'
-        'Images'               = '![Tolkien](https://lordoftherings.com/tolkien.jpg)'
-        'Resizing images'      = '![Tolkien|100](https://lordoftherings.com/tolkien.jpg'
+        'Images'               = '![Tolkien](https://something/pic.jpg)'
+        'Resizing images'      = '![Tolkien|100](https://something/pic.jpg)'
         'YouTube embed'        = '![](https://www.youtube.com/...)'
         'External links'       = '[Obsidian help](http:obsidian.md)'
         'Obsidian URI links'   = '[Link to node](obsidian://)'
