@@ -1,13 +1,16 @@
 <#
 PowerShell profile
-Version 0.3.2.2
-© 2023 av Stefan Blecko
+Version 0.3.2.3
+PowerShell version 7.4.1
+    - .NET v8.0.0
+    - PSReadLine v2.3.4
+
+© 2024 Stefan Blecko
 ---
 
 Powershell Shortcuts
 F1      ShowCommandHelp
 F2      SwitchPredictionView
-Ctrl+l  ClearScreen
 #>
 
 $host.PrivateData.ErrorBackgroundColor = 'Black'
@@ -26,6 +29,8 @@ if (Test-Path -Path $path2projfolder) {
 else {
     New-Item -Path "$env:USERPROFILE\Desktop\" -Name $projfolder `
         -ItemType "directory" | Out-Null
+    New-Item -Path "$env:USERPROFILE\Desktop\$projfolder\" -Name datafiles `
+        -ItemType "directory" | Out-Null
     New-Item -ItemType File "$path2projfolder\untitled1.ps1" | Out-Null
 }
 
@@ -41,15 +46,15 @@ function Get-ProjectFolder {
     if (Test-Path -Path D:\INSTALL\Git\PortableGit\bin\git.exe -PathType Leaf) {
         $Env:PATH += ";D:\INSTALL\Git\PortableGit\bin"
         function Global:prompt {
-            (Write-Host "[GIT]:" -NoNewline -ForegroundColor DarkYellow `
+            (Write-Host "[GIT]" -NoNewline -ForegroundColor DarkYellow `
             -BackgroundColor DarkBlue) + 
-            " $($executionContext.SessionState.Path.CurrentLocation)$( `
+            "$($executionContext.SessionState.Path.CurrentLocation)$( `
                 '>' * ($nestedPromptLevel + 1)) "
             return " "
         }
     }
     else {
-        Write-Warning "Hittade inte Git Portable." -WarningAction Continue
+        Write-Warning "Hittade inte Git portable." -WarningAction Continue
     }
 }
 
@@ -117,36 +122,40 @@ function Get-ChangeLog {
                 Import-Csv -Path "$path2projfolder\$Project\docs\$changelogname"
             }
             else {
-                Write-Error "$path2projfolder\$Project\docs\$changelogname måste skapas först."
+            Write-Warning "$path2projfolder\$Project\docs\$changelogname måste skapas först."
             }
         }
     }
 }
 
-function Get-ToDo  {
+function Get-ToDo {
     [CmdletBinding()]
     param (
         [string]$Topic,
+        [ValidateSet("WRITER", "YOUTUBE", "GOOGLE", "COPILOT", "GITHUB",
+        "STACKOVERFLOW", "POWERSHELL", "PYTHON", "MP4", "PDF", "URL")]
+        [string]$Tag = $null,
         [switch]$EraseData
     )
     process {
         if ($EraseData.IsPresent) {
-            Remove-Item "$path2projfolder\todo.csv" -Force -ErrorAction SilentlyContinue
+            Remove-Item "$env:USERPROFILE\todo.csv" -Force -ErrorAction SilentlyContinue
         }
         elseif ($Topic) {
             $create_csv = [PSCustomObject]@{
-                'Datum'     = "$(Get-Date -Format FileDate)"
-                'Ämne' = "$Topic"
+                'Date' = "$(Get-Date -Format FileDate)"
+                'Tag' = $Tag
+                'ToDo'  = $Topic
             }
             $create_csv | 
-            Export-Csv "$path2projfolder\todo.csv" -Force -Append
+            Export-Csv "$env:USERPROFILE\todo.csv" -Force -Append
         }
         else {
-            if (Test-Path -Path "$path2projfolder\todo.csv") {
-                Import-Csv -Path "$path2projfolder\todo.csv"
+            if (Test-Path -Path "$env:USERPROFILE\todo.csv") {
+                Import-Csv -Path "$env:USERPROFILE\todo.csv"
             }
             else {
-                Write-Error "$path2projfolder\junk.csv måste skapas först."
+                
             }
         }
     }
@@ -171,7 +180,7 @@ function Get-RandomCmdlet {
     )
     process {
         @(Get-Alias | Select-Object @{Name = "Dagens CmdLet"; Expression = { `
-            $_.DisplayName } }) | Get-Random -Count $Num
+            $_.DisplayName } }) | Get-Random -Count $Num 
     }
 }
 
@@ -208,20 +217,34 @@ function Clear-TmpFolder {
 }
 
 function Clear-PSReadlineHist {
-    $psconhist = "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+    $psconhist = Get-PSReadLineOption | Select-Object HistorySavePath -ExpandProperty HistorySavePath
     Clear-Content -Path $psconhist -Force
     Clear-History
 }
 
-function Clear-IpyHistoryData {
-    # En samling funktioner till jupyterlab kommer finns här.
+function Get-IpyTool {
     param (
-        [System.IO.FileInfo]$IpyHistData = "$HOME\.ipython\profile_clipro\history.sqlite"
+        [switch]$ListProfile,
+        [switch]$DelHistData,
+        [System.IO.FileInfo]$SQLiteFile = 
+        "$env:USERPROFILE\.ipython\profile_clipro\history.sqlite"
     )
-    Remove-Item $IpyHistData -Force -ErrorAction SilentlyContinue 
+    if ($ListProfile.IsPresent) {
+        Get-ChildItem "$env:USERPROFILE\.ipython\" -Directory | 
+        Select-Object Name -ExpandProperty Name |
+        Where-Object {$_.Name -notlike "profile_default"} | ForEach-Object {
+        $_.Name -replace "profile_", ""}
+        Write-Output "`nipython --profile="
+    }
+    elseif ($DelHistData.IsPresent) {
+        Remove-Item -Path $SQLiteFile -Force -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-Warning "Parameter saknas." -InformationAction Continue
+    }
 }
 
-function Get-PSVar {
+function Get-ShellVar {
     [CmdletBinding()]
     param (
         [switch]$EnvVar = $false
@@ -242,7 +265,7 @@ function Get-VScodeShortcuts {
     [PSCustomObject]@{
         "Indent/Outdent"                   = "Ctrl + Å/´"
         "Maximize panel size"              = "Ctrl + Alt + Ö"
-        "Debug"                            = @("Ctrl+ Shift + D")
+        "Debug"                            = "Ctrl+ Shift + D"
         "Debugging module"                 = "Import-Module MyModule.psm1"
         "Run script"                       = "Ctrl + F5"
         "Run selection"                    = "F8"
@@ -297,6 +320,8 @@ function Get-ObsidianQuickRef {
         'Task list 2'          = '- [x]'
         'Strikethrough'        = '~~text~~'
         'Highlighting'         = '==text=='
+        'Subscript'            = 'H~2~O'
+        'Superscript'          = 'X^2^'
         'Comments'             = '%%This is a comment%%'
         'Footnotes'            = '[^1]'
         'Horizontal bar'       = '---'
@@ -350,14 +375,15 @@ function Get-StudyTips {
     Write-Warning "Inte implementerat" -InformationAction Continue
 }
 
-function Get-WhatsNew {   
+function Get-ITdocs {   
     param (
-        [ValidateSet("Python", "PowerShell", "Obsidian", "VSCode")]
-        [string]$Topic = "Python"
+        [ValidateSet("PowerShell", "Obsidian", "VSCode")]
+        [string]$Topic
     )
     process {
-        if ($Topic -eq "Python") {
-            Start-Process "https://github.com/python/cpython/tree/main/Doc/whatsnew"
+        if ($Topic -eq "Obsidian") {
+            Start-Process "https://github.com/obsidianmd/obsidian-releases/releases"
+            
         }
         elseif ($Topic -eq "PowerShell") {
             Start-Process "https://github.com/MicrosoftDocs/PowerShell-Docs/tree/staging/reference/docs-conceptual/whats-new"
@@ -366,7 +392,7 @@ function Get-WhatsNew {
             Start-Process "https://github.com/microsoft/vscode/releases"
         }
         else {
-            Start-Process "https://github.com/obsidianmd/obsidian-releases/releases"
+            Start-Process "https://github.com/python/cpython/tree/main/Doc/whatsnew"
         }
     }
 }
@@ -381,19 +407,9 @@ function Set-WindowTitle {
     }    
 }
 
-function Set-PredictiveIntelliSense {
+function Get-PredictiveIntelliSense {
     # F.o.m PowerShell 7.3 är "predictiveIntelliSense" aktiverat som default
-    param (
-        [switch]$Off = $false
-    )
-    process {
-        if ($Off.IsPresent) {
-            Set-PSReadLineOption -PredictionSource None
-        }
-        else {
-            Set-PSReadLineOption -PredictionSource History
-        }
-    }
+    Get-PSReadLineOption | Select-Object PredictionSource, PredictionViewStyle
 }
 
 function Get-AdminTask {
@@ -405,12 +421,12 @@ function Get-AdminTask {
             "Remote management (parameterName ComputerName)", "Running files",
             "List files", "Service management", "Accunts management", "Cim",
             "Process management", "Service management", "Windows Log", 
-            "TCPIP management", "ZIP files", "Antivirus", "Office 365", "Azure")]
+            "TCPIP management", "ZIP files", "Antivirus", "Microsoft 365", "Azure")]
         $Topic
     )
     process {
-        if (Test-Path -Path "$env:USERPROFILE\Documents\PowerShell\admincmdlets.csv" -PathType Leaf) {
-            $pycsvfile = Import-Csv -Path "$env:USERPROFILE\Documents\PowerShell\admincmdlets.csv"
+        if (Test-Path -Path "$env:USERPROFILE\Desktop\$projfolder\admincmdlets.csv" -PathType Leaf) {
+            $pycsvfile = Import-Csv -Path "$env:USERPROFILE\Desktop\$projfolder\admincmdlets.csv"
             $pycsvfile | Select-Object $Topic -Unique -ErrorAction Ignore
         }
         else {
@@ -432,8 +448,8 @@ function Get-Py3QuickRef {
         $Topic
     )
     process {
-        if (Test-Path -Path "$env:USERPROFILE\Documents\PowerShell\py3quickref.csv" -PathType Leaf) {
-            $pycsvfile = Import-Csv -Path "$env:USERPROFILE\Documents\PowerShell\py3quickref.csv"
+        if (Test-Path -Path "$env:USERPROFILE\Desktop\$projfolder\py3quickref.csv" -PathType Leaf) {
+            $pycsvfile = Import-Csv -Path "$env:USERPROFILE\Desktop\$projfolder\py3quickref.csv"
             $pycsvfile | Select-Object $Topic -Unique -ErrorAction Ignore
         }
         else {
@@ -449,7 +465,8 @@ function Get-CimWin32Classes {
     )
     process {
         Get-CimClass -ClassName win32_* | Select-Object CimClassName |
-        Where-Object {$_.CimClassName -Like $SearchFor -and $_.CimClassName -notlike "Win32_Perf*"}
+        Where-Object {$_.CimClassName -Like $SearchFor -and $_.CimClassName `
+             -notlike "Win32_Perf*"}
     }
 }
 
@@ -502,11 +519,11 @@ function Get-VimQuickRef {
 function Get-CCNAQuickRef {
     param (
         [Parameter(Mandatory)]
-        [ValidateSet("TCP/IP", "Ethernet", "IP Routing", "Cisco IOS", 
-        "IPv4 Subnetting", "OSPF", "IP Version 6", "Wireless Networks")]
+        [ValidateSet("TCP/IP", "Ethernet", "IP Routing", "Cisco IOS", "IPv4 Subnetting",
+        "OSPF", "IP Version 6", "Wireless Networks")]
         $Topic
     )
-    Set-Location $env:USERPROFILE\Documents\PowerShell\
+    Set-Location -Path "$env:USERPROFILE\Desktop\$projfolder"
     if (Test-Path -Path CCNAquickref.csv) {
         $CCNAcsvfile = Import-Csv -Path .\CCNAquickref.csv
         $CCNAcsvfile | Select-Object $Topic -Unique
@@ -606,11 +623,11 @@ function Get-Ps7QuickRef {
         'Add member to obj'               = '$myObject | Add-Member'
         'Remove obj'                      = '$myObject.psobject.Properties.Remove()'
         'Convert to JSON'                 = '$myObject | ConvertTo-Json > file.json'
-        'Import from JSON'                = '$myObjectImport = Get-Content file.json | ConvertFrom-Json'
-        'Add member to PSCust'            = '$myObject | Add-Member -MemberType NoteProperty -Name X -Value X'
+        'Import from JSON'                = '$myO = gc file.json | ConvertFrom-Json'
+        'Add member to PSCust'            = '$myO | Add-Member -MemberType NoteProperty -Name X -Value X'
         'Remove member from PSCust'       = '$myObject.psobject.properties.remove("X")'
-        '[Parameter()]'                   = '[ValidateSet("X", "Y", "Z")]', '[ValidateRange()]',
-                                            '[ValidateScript({})]'
+        '[Parameter()]'                   = '[ValidateSet("X", "Y", "Z")]', 
+                                            '[ValidateRange()]', '[ValidateScript({})]'
     }
 }
 
@@ -635,20 +652,12 @@ function Get-Win10QuickRef {
     }
 }
 
-function Get-NoahideLaws {
-    [PSCustomObject]@{
-        "Not to worship idols"                        = ""
-        "Not to curse God"                            = ""
-        "Not to commit murder"                        = ""
-        "Not to commit adultery or sexual immorality" = ""
-        "Not to steal"                                = ""
-        "Not to eat flesh torn from a living animal"  = ""
-        "To establish courts of justice"              = ""
-    }
-}
-
+New-Alias -Name "touch" -Value New-Item -Description "Create new file."
 Clear-Host
 Clear-TmpFolder
 Get-ProjectFolder
-Get-RandomCmdlet
-New-Alias -Name "touch" -Value New-Item -Description "Create new file."
+Write-Host
+try {(Get-ToDo)[-1] | Format-List -Property "ToDo" | Out-String -NoNewline}
+catch { }
+Get-RandomCmdlet | Format-List | Out-String -NoNewline
+Write-Host
