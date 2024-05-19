@@ -1,6 +1,6 @@
 <#
 PowerShell profile
-Version 0.3.2.3
+Version 0.3.2.4
 PowerShell version 7.4.1
     - .NET v8.0.0
     - PSReadLine v2.3.4
@@ -96,9 +96,6 @@ function New-ProjektFolder {
 }
 
 function Get-ChangeLog {
-    <#
-    '[FIXME]Show-Blablabla: Something error.'
-    #>
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -122,7 +119,10 @@ function Get-ChangeLog {
                 Import-Csv -Path "$path2projfolder\$Project\docs\$changelogname"
             }
             else {
-            Write-Warning "$path2projfolder\$Project\docs\$changelogname måste skapas först."
+                New-Item -Path "$path2projfolder\$Project\docs\" -Name "$changelogname" `
+                -ItemType File | Out-Null 
+                Write-Warning "$changelogname finns ej. Skapar $changelogname." `
+                -WarningAction Continue
             }
         }
     }
@@ -144,8 +144,8 @@ function Get-ToDo {
         elseif ($Topic) {
             $create_csv = [PSCustomObject]@{
                 'Date' = "$(Get-Date -Format FileDate)"
-                'Tag' = $Tag
-                'ToDo'  = $Topic
+                'Tag'  = $Tag
+                'ToDo' = $Topic
             }
             $create_csv | 
             Export-Csv "$env:USERPROFILE\todo.csv" -Force -Append
@@ -167,10 +167,11 @@ function Get-PSConHelp {
 }
 
 function Get-AllHelpTopics {
-    $ProgressPreference = 'SilentlyContinue'
     # $OutputEncoding = [console]::OutputEncoding
     # $OutputEncoding.ASCIIENCODING
-    Get-Help about_* | Select-Object @{Name = "Help article"; Expression = { $_.Name } }    
+    $ProgressPreference = 'SilentlyContinue'
+    Get-Help about_* | Select-Object @{Name = "Help article"; 
+    Expression = { $_.Name } } 
 }
 
 function Get-RandomCmdlet {
@@ -181,15 +182,6 @@ function Get-RandomCmdlet {
     process {
         @(Get-Alias | Select-Object @{Name = "Dagens CmdLet"; Expression = { `
             $_.DisplayName } }) | Get-Random -Count $Num 
-    }
-}
-
-function Get-StackOverflowHelp {
-    param (
-        [array]$Topic = "PowerShell"
-    )
-    process {
-        Start-Process "https://stackoverflow.com/questions/tagged/$Topic"
     }
 }
 
@@ -217,12 +209,13 @@ function Clear-TmpFolder {
 }
 
 function Clear-PSReadlineHist {
-    $psconhist = Get-PSReadLineOption | Select-Object HistorySavePath -ExpandProperty HistorySavePath
+    $psconhist = Get-PSReadLineOption | 
+    Select-Object HistorySavePath -ExpandProperty HistorySavePath
     Clear-Content -Path $psconhist -Force
     Clear-History
 }
 
-function Get-IpyTool {
+function Show-IpythonProfile {
     param (
         [switch]$ListProfile,
         [switch]$DelHistData,
@@ -244,7 +237,7 @@ function Get-IpyTool {
     }
 }
 
-function Get-ShellVar {
+function Show-ShellVar {
     [CmdletBinding()]
     param (
         [switch]$EnvVar = $false
@@ -370,31 +363,26 @@ function Get-CalcShortcuts {
     
 }
 
-function Get-StudyTips {
-    # Start-Process "https://en.wikipedia.org/wiki/Study_skills"
-    Write-Warning "Inte implementerat" -InformationAction Continue
-}
-
-function Get-ITdocs {   
+function Get-ITHelp {   
     param (
-        [ValidateSet("PowerShell", "Obsidian", "VSCode")]
+        [ValidateSet("PowerShell", "Obsidian", "VSCode", "Python")]
         [string]$Topic
     )
     process {
-        if ($Topic -eq "Obsidian") {
-            Start-Process "https://github.com/obsidianmd/obsidian-releases/releases"
-            
+        switch ($Topic) {
+            "PowerShell" {
+                Start-Process "https://learn.microsoft.com/en-us/powershell/scripting/overview"}
+            "Obsidian" {
+                Start-Process "https://help.obsidian.md/Home"}
+            "VSCode" {
+                Start-Process "https://code.visualstudio.com/updates"}
+            "Python" {
+                Start-Process "https://docs.python.org/3/library/index.html"   
+            }
+            default {
+                Start-Process "https://stackoverflow.com/questions"}
         }
-        elseif ($Topic -eq "PowerShell") {
-            Start-Process "https://github.com/MicrosoftDocs/PowerShell-Docs/tree/staging/reference/docs-conceptual/whats-new"
-        }
-        elseif ($Topic -eq "VSCode") {
-            Start-Process "https://github.com/microsoft/vscode/releases"
-        }
-        else {
-            Start-Process "https://github.com/python/cpython/tree/main/Doc/whatsnew"
-        }
-    }
+    }        
 }
 
 function Set-WindowTitle {
@@ -466,7 +454,7 @@ function Get-CimWin32Classes {
     process {
         Get-CimClass -ClassName win32_* | Select-Object CimClassName |
         Where-Object {$_.CimClassName -Like $SearchFor -and $_.CimClassName `
-             -notlike "Win32_Perf*"}
+        -notlike "Win32_Perf*"}
     }
 }
 
@@ -517,21 +505,7 @@ function Get-VimQuickRef {
 }
 
 function Get-CCNAQuickRef {
-    param (
-        [Parameter(Mandatory)]
-        [ValidateSet("TCP/IP", "Ethernet", "IP Routing", "Cisco IOS", "IPv4 Subnetting",
-        "OSPF", "IP Version 6", "Wireless Networks")]
-        $Topic
-    )
-    Set-Location -Path "$env:USERPROFILE\Desktop\$projfolder"
-    if (Test-Path -Path CCNAquickref.csv) {
-        $CCNAcsvfile = Import-Csv -Path .\CCNAquickref.csv
-        $CCNAcsvfile | Select-Object $Topic -Unique
-
-    }
-    else {
-        Write-Error -Message "Filen finns ej."
-    }
+    Write-Warning "Inte implementerat" -InformationAction Continue
 }
 
 function Get-SysInfo {
