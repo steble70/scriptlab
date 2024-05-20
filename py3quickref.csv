@@ -1,17 +1,162 @@
-Strings,Lists,Tuples,Dictionaries,Sets,Comparisons,Loops,List comprehension,Generators,Functions,Printing,File access,Input,Error streams,Other file operations,Exceptions dir(__builtins__)[:72],OOP,Debugging,JSON,Databases,SYS,OS,Boilerplate,Built-in functions,Modules,Jupyterlab shortcuts
-"s = ""foo bar""","l = [1, 2, 3, 4, 5] ","x = 1,2,3","d = {'f1': 10, 'f2': 20}","s = {1,3,5}",< ,for x in range(6),"big_win = lambda : [random.randint(50**2, 99**2) for w in range(1, 11)]",yield,def func_name(argument),str(x),"f = open(""test.txt"", ""w"")","x = input(""Name: "") ","print(""Error!"", file=sys.stderr, flush=True) ","os.rename(from, to)",while True:,class Person:,breakpoint(),,"conn = sqlite3.connect(""data.db"")",sys.argv,"os.path.split(""/usr/bin/go.sh"")",#!/usr/bin/env python,dir(__builtins__)[81:],sys.path,Edit mode: Enter
-s = 'foo bar',l[0],"x = (1,2,3) ","d = dict(f1=10, f2=20)","l = [1, 3, 1, 5, 3]",<= ,"for x in range(1,6)",,,def func_name(*args),repr(x),"f.write(""Ala ma kota\n"") ",for line in sys.stdin: print(line),,os.remove(path),try:,ID = 0,ipython –pdb,,c = conn.cursor() ,sys.stdin,"os.path.join(""/usr/bin"", ""go.sh"")",# -*- coding: utf-8 -*-,"'{} {}'.format('ett', 'två')",__init__.py,Command mode: ESC
-"s = r""c:\dir\new""",l[0:3],x[1] ,"keys = ('a', 'b', 'c') ","s = set(l) # set([1, 3, 5])",> ,"for x in range(1,6,2)",,,def func_name(**kwargs),,f.close(),,,"os.chmod(file, 0700)",break,"def __init__(self, name, age=0):",l - list,,"c.execute(""SELECT * FROM employees"") ",sys.stdout,"os.path.splitext(""/usr/bin/go.sh"")","""""""Module Docstring""""""",'{:>10}'.format('test'),module_name.py,Help: h
-"s = """"""Hello World""""â€",l[-2:],"a,b,c = x ",d = dict.fromkeys(keys),"if (3 in s):  s1+s2, s1-s2, s1^s2, s1|s2 ",>= ,"for k,v in D.items(): print(""D[{}]={}"".format(k,v))",,,return,,"for line in open(""test.txt""): print(line, end="""")",,,os.stat(file),except FileNotFoundError: print(â€™No file.â€™),self.name = name ,n - next line,,for row in c: print(row[0]) ,sys.path,"os.path.isfile(""go.sh"")",def main():,'{:^10}'.format('test'),,Copy: c
-"s.join("" baz"")","l[1:4] = [7,8]",,for k in d: print(k),,,"for i,v in enumerate(L)",,,,,"L = open(""test.txt"").readlines()",,,,finally:,self.age = age ,s – step,,conn.commit() ,sys.platform,"os.environ.get(""PYTHONSTARTUP"") ","if __name__ == ""__main__"": main()",'{:.5}'.format('kallekula'),,Paste: v
-n = len(s) ,del L[2],,for v in d.values(),,!= ,for i in sorted(set(L)),,,,,"with open(file_gen(), 'x', encoding='UTF-8') as f:",,,,,def lastName(self):,c – continue,,conn.close() ,sys.version,,,'{:d}'.format('32'),,Cut: x
-"""Ala ma {} psy i {} koty"".format(2,3) ",l.append(x),,"for k, v in d.items()",,is ,for x in reversed(L1),,,,,,,,,,return self.name.split()[-1] ,h -  help,,,,,,"for x, y in zip(a, b)",,Shift + arrow: Highlight/select multiple cells
-"""Square root of 2 is equal to {:.2f}"".format(math.sqrt(2)) ",l.remove(x) ,,list(d.keys()),,is not ,,,,,,,,,,,,,,,,,,,,Undo: z
-,l.extend(L2),,sorted(d.keys()),,min(),,,,,,,,,,,,,,,,,,,,New cell above: a
-,l.pop(),,d = {} ,,max(),,,,,,,,,,,,,,,,,,,,New cell below: b
-,l.sort(),,"d[(1,8,5)] = 100",,,,,,,,,,,,,,,,,,,,,,Merge cell: Control: m
-,x in l,,"d.get((1,8,5))",,,,,,,,,,,,,,,,,,,,,,Split cells: Control + _
-,l.index(x),,"d.get((1,1,1), -1)",,,,,,,,,,,,,,,,,,,,,,Find/Replace: f
-,[x*2 for x in l if x>2],,,,,,,,,,,,,,,,,,,,,,,,Markdown: m
-,,,,,,,,,,,,,,,,,,,,,,,,,Code cell: y
-,,,,,,,,,,,,,,,,,,,,,,,,,Raw cell: r
+Strings,Lists,Tuples,Dictionaries,Sets,Comparisons,Math,Loops,List comprehension,Generators,Functions,Printing,File access,Input,Error streams,Exceptions,OOP,Debugging,JSON,Databases,SYS,OS,Boilerplate,Builtins,Package,Jupyterlab shortcuts,Ipython,Ugly code,argparse,pathlib,calendar,Software design principle,PEP8
+
+"s = ""foo bar""","l = [1, 2, 3, 4, 5] ","x = 1,2,3","d = {'f1': 10, 'f2': 20}","s = {1,3,5}",< ,if i% 2 == 0,for x in range(6),"big_win = lambda : [random.randint(50**2, 99**2) for w in range(1, 11)]","def listoffile(pat='*'):
+    yield mypath.glob(pat)",def func_name(argument),str(x),"f = open(""test.txt"", ""w"")","x = input(""Name: "") ","print(""Error!"", file=sys.stderr, flush=True) ","try: x = int(input(""Please enter a number: ""))",class Person:,Tracebacks,,"conn = sqlite3.connect(""data.db"")",sys.argv,"os.path.split(""/usr/bin/go.sh"")",#!/usr/bin/env python,abs,Create a new folder named D:\MyApp,Edit mode: Enter,ipython –profile=ipcon,try: do_something(),,,c = calendar.TextCalendar(calendar.MONDAY),KISS principle (https://en.wikipedia.org/wiki/KISS_principle),Line 79 char
+
+s = 'foo bar',l[0],"x = (1,2,3) ","d = dict(f1=10, f2=20)","l = [1, 3, 1, 5, 3]",<= ,,"for x in range(1,6)",[f.name for f in profol.iterdir() if f.suffix == '.py'],n = next(listoffile('*.py'),def func_name(*args),repr(x),"f.write(""Ala ma kota\n"") ",for line in sys.stdin: print(line),,break,ID = 0,print(),,c = conn.cursor() ,sys.stdin,"os.path.join(""/usr/bin"", ""go.sh"")",# -*- coding: utf-8 -*-,aiter,"Inside MyApp, create a subfolder with the name mypackage",Command mode: ESC,%colors nocolor,"new_name = new_name.replace('c', 'k')",,,"print(c.formatmonth(today.year, today.month))",Don't repeat yourself (https://en.wikipedia.org/wiki/Don't_repeat_yourself),
+
+"s = r""c:\dir\new""",l[0:3],x[1] ,"keys = ('a', 'b', 'c') ","s = set(l) # set([1, 3, 5])",> ,,"for x in range(1,6,2)",,"for item in range(1, 19+1):
+    Print(item, next(n))",def func_name(**kwargs),,f.close(),,,except ValueError: print('Not a number’),"def __init__(self, name, age=0):",breakpoint(),,"c.execute(""SELECT * FROM employees"") ",sys.stdout,"os.path.splitext(""/usr/bin/go.sh"")","""""""Module Docstring""""""",all,Create an empty __init__.py file in the mypackage folder,,%logoff,camelCase,,,today = date.today(),Open-closed principle (https://en.wikipedia.org/wiki/Open–closed_principle),
+
+"s = """"""Hello World""""”",l[-2:],"a,b,c = x ",d = dict.fromkeys(keys),"if (3 in s):  s1+s2, s1-s2, s1^s2, s1|s2 ",>= ,,"for k,v in D.items(): print(""D[{}]={}"".format(k,v))",,,return,,"for line in open(""test.txt""): print(line, end="""")",,,finally:,self.name = name ,Import ipdb,,for row in c: print(row[0]) ,sys.path,"os.path.isfile(""go.sh"")",def main():,anext,Create modules greet.py and functions.py,Copy: c,%logon,not specify data types,,,"def itermonth(y=today.year, m=today.month):
+	listofdays = []
+	for day in c.itermonthdays(y, m):
+		listofdays.append(day)
+	while 0 in listofdays:
+		listofdays.remove(0)
+	return listofdays",Composition over inheritance (https://en.wikipedia.org/wiki/Composition_over_inheritance),
+
+"s.join("" baz"")","l[1:4] = [7,8]",,for k in d: print(k),,,,"for i,v in enumerate(L)",,,,,"L = open(""test.txt"").readlines()",,,ArithmeticError,self.age = age ,python -m ipdb <script.py>,,conn.commit() ,sys.platform,"os.environ.get(""PYTHONSTARTUP"") ","if __name__ == ""__main__"": main()",any,,Paste: v,%lsmagic,,,,,Single-responsibility principle (https://en.wikipedia.org/wiki/Single-responsibility_principle),
+
+n = len(s) ,L[ ],,for v in d.values(),,!= ,,for i in sorted(set(L)),,,,,"with open(file_gen(), 'r+', encoding='UTF-8') as f:",,,AssertionError,def lastName(self):,l – list,,conn.close() ,sys.version,"os.rename(from, to)",,ascii,,Cut: x,%notebook filename,,,,,Separation of Concerns (https://en.wikipedia.org/wiki/Separation_of_concerns),
+
+"""Ala ma {} psy i {} koty"".format(2,3) ",del L[2],,"for k, v in d.items()",,is ,,for x in reversed(L1),,,,,,,,AttributeError,return self.name.split()[-1] ,n – next line,,,,os.remove(path),,bin,,Shift + arrow: Highlight/select multiple cells,%pdef,,,,,You aren't gonna need it (https://en.wikipedia.org/wiki/You_aren't_gonna_need_it),
+
+"""Square root of 2 is equal to {:.2f}"".format(math.sqrt(2)) ",l.append(x),,list(d.keys()),,is not ,,,,,,,,,,BaseException,dir(__build_class__),s – into,,,,"os.chmod(file, 0700)",,bool,,Undo: z,%pdoc,,,,,Premature Optimization (https://en.wikipedia.org/wiki/Program_optimization),
+
+f'{}f-strängar',l.remove(x) ,,sorted(d.keys()),,min(),,,,,,,,,,BlockingIOError,,c – continue,,,,os.stat(file),,breakpoint,,New cell above: a,object?,,,,,Code refactoring (https://en.wikipedia.org/wiki/Code_refactoring),
+
+,l.extend(L2),,d = {} ,,max(),,,,,,,,,,BrokenPipeError,,h -  help,,,,,,bytearray,,New cell below: b,%pycat,,,,,,
+
+,l.pop(),,"d[(1,8,5)] = 100",,,,,,,,,,,,BufferError,,b - set a breakpoint,,,,,,bytes,,Merge cell: Control: m,%quickref,,,,,,
+
+,l.sort(),,"d.get((1,8,5))",,,,,,,,,,,,Bytesarning,,l -  list source code,,,,,,callable,,Split cells: Control + _,%run,,,,,,
+
+,x in l,,"d.get((1,1,1), -1)",,,,,,,,,,,,ChildProcessError,,u - navigate up a stack frame,,,,,,chr,,Find/Replace: Ctrl + F,%sx,,,,,,
+
+,l.index(x),,a | b,,,,,,,,,,,,ConnectionAbortedError,,d -  navigate down a stack frame,,,,,,classmethod,,Markdown: m,,,,,,,
+
+,[x*2 for x in l if x>2],,d['Kalle'] = 22,,,,,,,,,,,,ConnectionError,,p a – value of variables,,,,,,compile,,Code cell: y,,,,,,,
+
+,,,,,,,,,,,,,,,ConnectionRefusedError,,,,,,,,complex,,Raw cell: r,,,,,,,
+
+,,,,,,,,,,,,,,,ConnectionResetError,,,,,,,,copyright,,Toggle left pane: Ctrl + B,,,,,,,
+
+,,,,,,,,,,,,,,,Deprecationarning,,,,,,,,credits,,Command palette: Shift + Ctrl + C,,,,,,,
+
+,,,,,,,,,,,,,,,EOFError,,,,,,,,delattr,,Toggle filebrowser: Shift + Ctrl + F,,,,,,,
+
+,,,,,,,,,,,,,,,Ellipsis,,,,,,,,dict,,"Setting: Ctrl + ,",,,,,,,
+
+,,,,,,,,,,,,,,,Encodingarning,,,,,,,,dir,,![title](bild.jpg),,,,,,,
+
+,,,,,,,,,,,,,,,EnvironmentError,,,,,,,,display,,,,,,,,,
+
+,,,,,,,,,,,,,,,Exception,,,,,,,,divmod,,,,,,,,,
+
+,,,,,,,,,,,,,,,False,,,,,,,,enumerate,,,,,,,,,
+
+,,,,,,,,,,,,,,,FileExistsError,,,,,,,,eval,,,,,,,,,
+
+,,,,,,,,,,,,,,,FileNotFoundError,,,,,,,,exec,,,,,,,,,
+
+,,,,,,,,,,,,,,,FloatingPointError,,,,,,,,filter,,,,,,,,,
+
+,,,,,,,,,,,,,,,Futurearning,,,,,,,,float,,,,,,,,,
+
+,,,,,,,,,,,,,,,GeneratorExit,,,,,,,,format,,,,,,,,,
+
+,,,,,,,,,,,,,,,IOError,,,,,,,,frozenset,,,,,,,,,
+
+,,,,,,,,,,,,,,,ImportError,,,,,,,,get_ipython,,,,,,,,,
+
+,,,,,,,,,,,,,,,Importarning,,,,,,,,getattr,,,,,,,,,
+
+,,,,,,,,,,,,,,,IndentationError,,,,,,,,globals,,,,,,,,,
+
+,,,,,,,,,,,,,,,IndexError,,,,,,,,hasattr,,,,,,,,,
+
+,,,,,,,,,,,,,,,InterruptedError,,,,,,,,hash,,,,,,,,,
+
+,,,,,,,,,,,,,,,IsADirectoryError,,,,,,,,help,,,,,,,,,
+
+,,,,,,,,,,,,,,,KeyError,,,,,,,,hex,,,,,,,,,
+
+,,,,,,,,,,,,,,,KeyboardInterrupt,,,,,,,,id,,,,,,,,,
+
+,,,,,,,,,,,,,,,LookupError,,,,,,,,input,,,,,,,,,
+
+,,,,,,,,,,,,,,,MemoryError,,,,,,,,int,,,,,,,,,
+
+,,,,,,,,,,,,,,,ModuleNotFoundError,,,,,,,,isinstance,,,,,,,,,
+
+,,,,,,,,,,,,,,,NameError,,,,,,,,issubclass,,,,,,,,,
+
+,,,,,,,,,,,,,,,None,,,,,,,,iter,,,,,,,,,
+
+,,,,,,,,,,,,,,,NotADirectoryError,,,,,,,,len,,,,,,,,,
+
+,,,,,,,,,,,,,,,NotImplemented,,,,,,,,license,,,,,,,,,
+
+,,,,,,,,,,,,,,,NotImplementedError,,,,,,,,list,,,,,,,,,
+
+,,,,,,,,,,,,,,,OSError,,,,,,,,locals,,,,,,,,,
+
+,,,,,,,,,,,,,,,OverfloError,,,,,,,,map,,,,,,,,,
+
+,,,,,,,,,,,,,,,PendingDeprecationarning,,,,,,,,max,,,,,,,,,
+
+,,,,,,,,,,,,,,,PermissionError,,,,,,,,memoryview,,,,,,,,,
+
+,,,,,,,,,,,,,,,ProcessLookupError,,,,,,,,min,,,,,,,,,
+
+,,,,,,,,,,,,,,,RecursionError,,,,,,,,next,,,,,,,,,
+
+,,,,,,,,,,,,,,,ReferenceError,,,,,,,,object,,,,,,,,,
+
+,,,,,,,,,,,,,,,Resourcearning,,,,,,,,oct,,,,,,,,,
+
+,,,,,,,,,,,,,,,RuntimeError,,,,,,,,open,,,,,,,,,
+
+,,,,,,,,,,,,,,,Runtimearning,,,,,,,,ord,,,,,,,,,
+
+,,,,,,,,,,,,,,,StopAsyncIteration,,,,,,,,pow,,,,,,,,,
+
+,,,,,,,,,,,,,,,StopIteration,,,,,,,,print,,,,,,,,,
+
+,,,,,,,,,,,,,,,SyntaxError,,,,,,,,property,,,,,,,,,
+
+,,,,,,,,,,,,,,,Syntaxarning,,,,,,,,range,,,,,,,,,
+
+,,,,,,,,,,,,,,,SystemError,,,,,,,,repr,,,,,,,,,
+
+,,,,,,,,,,,,,,,SystemExit,,,,,,,,reversed,,,,,,,,,
+
+,,,,,,,,,,,,,,,TabError,,,,,,,,round,,,,,,,,,
+
+,,,,,,,,,,,,,,,TimeoutError,,,,,,,,set,,,,,,,,,
+
+,,,,,,,,,,,,,,,True,,,,,,,,setattr,,,,,,,,,
+
+,,,,,,,,,,,,,,,TypeError,,,,,,,,slice,,,,,,,,,
+
+,,,,,,,,,,,,,,,UnboundLocalError,,,,,,,,sorted,,,,,,,,,
+
+,,,,,,,,,,,,,,,UnicodeDecodeError,,,,,,,,staticmethod,,,,,,,,,
+
+,,,,,,,,,,,,,,,UnicodeEncodeError,,,,,,,,str,,,,,,,,,
+
+,,,,,,,,,,,,,,,UnicodeError,,,,,,,,sum,,,,,,,,,
+
+,,,,,,,,,,,,,,,UnicodeTranslateError,,,,,,,,super,,,,,,,,,
+
+,,,,,,,,,,,,,,,Unicodearning,,,,,,,,tuple,,,,,,,,,
+
+,,,,,,,,,,,,,,,Userarning,,,,,,,,type,,,,,,,,,
+
+,,,,,,,,,,,,,,,ValueError,,,,,,,,vars,,,,,,,,,
+
+,,,,,,,,,,,,,,,arning,,,,,,,,zip,,,,,,,,,
+
+,,,,,,,,,,,,,,,indosError,,,,,,,,,,,,,,,,,
+
