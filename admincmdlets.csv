@@ -1,24 +1,49 @@
 Server management,Security,Hardware inventory,Patching,Print management,Remote management,Remote management (parameterName ComputerName),Running files,List files,Accunts management,Cim,Process management,Service management,Windows Log,TCPIP management,ZIP files,Antivirus,Office 365,Azure
+
 Rename-Computer,Set-ExecutionPolicy,msinfo32.exe,"Get-HotFix | select HotFixID, Description, Caption, InstalledOn | sort -Property InstalledOn -Descending",Add-Printer,Connect-PSSession,Connect-PSSession,Invoke-Expression $string,dir HKLM:\SOFTWARE\,Add-LocalGroupMember,Get-CimInstance -ClassName Win32_OperatingSystem | select LastBootUpTime,Get-Process -Name vlc).Kill(),"Get-Service workstation | select  Username, Starttype, BinaryPathName",Get-WinEvent -ListLog * | ? isEnabled | Out-GridView,Test-Connection www.google.com,Compress-Archive -Path C:\Demo\* -DestinationPath archive.zip,,,New-AzVM
-Restart-Computer,ConvertTo-SecureString,,,Add-PrinterDriver,Disable-PSSessionConfiguration,Connect-WSMan,Invoke-Command -ScriptBlock {ipconfig /release},dir .\Users\Admin\Install\*.exe | select VersionInfo -ExpandProperty VersionInfo,Disable-LocalUser,,"Get-Process | ? {$_.Name -match ""Win*""} | select name, id, path","Get-Service | where {$_.Status -eq ""Running"" -and $_.Name -like ""w*""}",,Test-Connection www.google.com -Traceroute,Expand-Archive -Path archive.zip -DestinationPath ,,,Get-AzVM 
-Stop-Computer,,,,Add-PrinterPort,Disconnect-PSSession,Disconnect-WSMan,Invoke-Item bonus.pdf,"dir Cert:\LocalMachine\Root | ? NotAfter -LT (Get-Date).AddDays(300) | select Subject, NotAfter",Enable-LocalUser,,Get-Process | Out-GridView -PassThru | Stop-Process,Set-Service -Name AdobeARMservice -StartupType Disabled,,Get-NetIPAddress,,,,Stop-AzVM
-shutdown /s,,,,Get-PrintConfiguration,Enable-PSRemoting,Enter-PSSession,& notepad.exe,dir -Path *.mp4 -Recurse -Filter *powershell* | select FullName > all_ps_mp4.txt,Get-LocalGroup,,Get-Process | Out-String | Set-Clipboard,,,Resolve-DnsName ,,,,Start-AzVM
+
+Restart-Computer,ConvertTo-SecureString,Get-CimInstance -ClassName Win32_Processor | select Name,Get-CimInstance -ClassName Win32_QuickFixEngineering,Add-PrinterDriver,Disable-PSSessionConfiguration,Connect-WSMan,Invoke-Command -ScriptBlock {ipconfig /release},dir .\Users\Admin\Install\*.exe | select VersionInfo -ExpandProperty VersionInfo,Disable-LocalUser,,"Get-Process | ? {$_.Name -match ""Win*""} | select name, id, path","Get-Service | where {$_.Status -eq ""Running"" -and $_.Name -like ""w*""}",,Test-Connection www.google.com -Traceroute,Expand-Archive -Path archive.zip -DestinationPath ,,,Get-AzVM 
+
+Stop-Computer,-Verbose -Confirm -WhatIf,,,Add-PrinterPort,Disconnect-PSSession,Disconnect-WSMan,Invoke-Item bonus.pdf,"dir Cert:\LocalMachine\Root | ? NotAfter -LT (Get-Date).AddDays(300) | select Subject, NotAfter",Enable-LocalUser,,Get-Process | Out-GridView -PassThru | Stop-Process,Set-Service -Name AdobeARMservice -StartupType Disabled,,Get-NetIPAddress,"tar -cvzf archive.tar.gz -C ""[path]""",,,Stop-AzVM
+
+shutdown /s,,,,Get-PrintConfiguration,Enable-PSRemoting,Enter-PSSession,& notepad.exe,dir -Path *.mp4 -Recurse -Filter *powershell* | select FullName > all_ps_mp4.txt,Get-LocalGroup,,Get-Process | Out-String | Set-Clipboard,,,Resolve-DnsName ,7z a -ppassword -mhe -sfx archive_22junCon.exe *.txt,,,Start-AzVM
+
 shutdown /h,,,,Get-Printer,Enable-PSSessionConfiguration,Get-HotFix,,dir HKLM:\SOFTWARE\,Get-LocalGroupMember,,"Stop-Process -Name ""vlc""",,,Get-NetTCPConnection,,,,Restart-AzVM
+
 shutdown /r,,,,Get-PrinterDriver,$credentials = Get-Credential ,Get-PSSession,,dir .\Users\Admin\Install\*.exe | select VersionInfo -ExpandProperty VersionInfo,Get-LocalUser,,,,,Get-DnsClient ,,,,
+
 shutdown /r /c,,,,Get-PrinterPort,$PSSessionOption = New-PSSessionOption -SkipCACheck,Invoke-Command,,"dir Cert:\LocalMachine\Root | ? NotAfter -LT (Get-Date).AddDays(300) | select Subject, NotAfter",New-LocalUser,,,,,ipconfig /all,,,,
-net use X: \\Server\Share,,,,Get-PrinterProperty,Exit-PSSession,Invoke-WSManAction,,,Remove-LocalGroup,,,,,,,,,
-Taskmgr.exe,,,,Get-PrintJob,Export-PSSession,New-PSSession,,,Remove-LocalGroupMember,,,,,,,,,
-sysdm.cpl,,,,Read-PrinterNfcTag,Get-PSSession,New-WSManInstance,,,Remove-LocalUser,,,,,,,,,
+
+net use X: \\Server\Share,,,,Get-PrinterProperty,Exit-PSSession,Invoke-WSManAction,,,Remove-LocalGroup,,,,,"New-PSDrive -Persist -Name ""X"" -PSProvider ""FileSystem"" -Root ""\\Server0",,,,
+
+Taskmgr.exe,,,,Get-PrintJob,Export-PSSession,New-PSSession,,,Remove-LocalGroupMember,,,,,"net share tempshare=c:\temp /users:25 /remark:""test share of the temp
+Folder",,,,
+
+sysdm.cpl,,,,Read-PrinterNfcTag,Get-PSSession,New-WSManInstance,,,Remove-LocalUser,,,,,Get-CimWin32Classes | where -Property CimClassName -Like *net*,,,,
+
 appwiz.cpl,,,,Remove-Printer,Get-PSSessionCapability,Receive-Job,,,Rename-LocalGroup,,,,,,,,,
+
 desk.cpl,,,,Remove-PrinterDriver,Get-PSSessionConfiguration,Receive-PSSession,,,Rename-LocalUser,,,,,,,,,
+
 ms-settings:,,,,Remove-PrinterPort,Import-PSSession,Remove-PSSession,,,Set-LocalGroup,,,,,,,,,
+
 diskmgmt.msc,,,,Remove-PrintJob,New-PSSession,Remove-WSManInstance,,,Set-LocalUser,,,,,,,,,
-,,,,Rename-Printer,New-PSSessionConfigurationFile,Rename-Computer,,,,,,,,,,,,
-,,,,Restart-PrintJob,New-PSSessionOption,Restart-Computer,,,,,,,,,,,,
-,,,,Resume-PrintJob,Receive-PSSession,Send-MailMessage,,,,,,,,,,,,
-,,,,Set-PrintConfiguration,Register-PSSessionConfiguration,Set-WSManInstance,,,,,,,,,,,,
+
+Get-CimInstance -ClassName Win32_BIOS,,,,Rename-Printer,New-PSSessionConfigurationFile,Rename-Computer,,,,,,,,,,,,
+
+Get-CimInstance -ClassName Win32_Desktop,,,,Restart-PrintJob,New-PSSessionOption,Restart-Computer,,,,,,,,,,,,
+
+Get-CimInstance -ClassName Win32_LogonSession,,,,Resume-PrintJob,Receive-PSSession,Send-MailMessage,,,,,,,,,,,,
+
+Get-CimInstance -ClassName Win32_ComputerSystem | select UserName,,,,Set-PrintConfiguration,Register-PSSessionConfiguration,Set-WSManInstance,,,,,,,,,,,,
+
 ,,,,Set-Printer,Remove-PSSession,Stop-Computer,,,,,,,,,,,,
+
 ,,,,Set-PrinterProperty,Set-PSSessionConfiguration,Test-Connection,,,,,,,,,,,,
+
 ,,,,Suspend-PrintJob,Test-PSSessionConfigurationFile,Test-WSMan,,,,,,,,,,,,
+
 ,,,,Write-PrinterNfcTag,Unregister-PSSessionConfiguration,,,,,,,,,,,,,
+
 ,,,,,mstsc.exe,,,,,,,,,,,,,
+
