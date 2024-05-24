@@ -5,4 +5,4 @@
 
 ### Klicka gärna på länkarna ovan för titta närmare på källkoden. Mer information kommer senare,
 ---
-[![Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Lint](https://github.com/steble70/scriptlab/actions/workflows/superlinter.yml/badge.svg)](https://github.com/steble70/scriptlab/actions/workflows/superlinter.yml)
