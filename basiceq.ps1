@@ -1,6 +1,6 @@
 <#
 basiceq.ps1 - Basic Equation
-version 0.1
+version 0.2
 (C) 2019 av Stefan Blecko
 
 Outputen ska bli någonting liknande det här (endast Powershell Core):
