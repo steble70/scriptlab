@@ -1,0 +1,36 @@
+{
+  "Glossary": {
+    "Cloud Computing": "On-demand delivery of IT resources over the internet with pay-as-you-go pricing.",
+    "Azure": "Microsoft's expansive set of cloud services to help organizations meet business challenges.",
+    "Resource Group": "A container that holds related resources for an Azure solution.",
+    "Virtual Machine": "An emulation of a computer system, providing the functionality of a physical machine.",
+    "Azure Virtual Network": "Enables secure communication between Azure resources.",
+    "Subscription": "An agreement with Microsoft to use cloud services, billed per usage.",
+    "Azure Active Directory": "A cloud-based identity and access management service.",
+    "Azure Marketplace": "An online store offering applications and services designed to integrate with Azure.",
+    "Azure Portal": "A web-based interface for managing Azure resources.",
+    "ARM Templates": "Azure Resource Manager templates; JSON files defining infrastructure and configuration.",
+    "Azure Storage": "Scalable cloud storage service for data objects, files, and messaging.",
+    "Azure Functions": "A serverless compute service for running event-triggered code without explicit provisioning.",
+    "Azure App Service": "A platform for building and hosting web apps, REST APIs, and mobile backends.",
+    "Azure Kubernetes Service": "Simplifies deployment and management of containerized applications with Kubernetes.",
+    "Azure DevOps": "A suite of tools for software development and deployment in Azure.",
+    "Azure Security Center": "Provides unified security management and threat protection across cloud workloads.",
+    "Azure Monitor": "A platform for collecting, analyzing, and acting on telemetry data.",
+    "Azure Advisor": "A personalized cloud consultant offering best practice recommendations.",
+    "Azure Policy": "Service for creating, assigning, and managing policies to enforce rules.",
+    "Azure Cost Management": "Tools for monitoring, allocating, and optimizing cloud spending.",
+    "Service Level Agreement (SLA)": "Commitments from Microsoft guaranteeing certain performance standards.",
+    "Infrastructure as a Service (IaaS)": "Provides virtualized computing resources over the internet.",
+    "Platform as a Service (PaaS)": "Offers a platform allowing customers to develop, run, and manage applications.",
+    "Software as a Service (SaaS)": "Delivers software applications over the internet on a subscription basis.",
+    "Availability Zone": "Physically separate locations within an Azure region for high availability.",
+    "Azure Firewall": "Managed, cloud-based network security service protecting Azure Virtual Network resources.",
+    "Azure DDoS Protection": "Offers Distributed Denial of Service (DDoS) attack protection for your apps.",
+    "Compliance Manager": "Workflow-based risk assessment tool that helps track, assign, and verify regulatory compliance.",
+    "Defense in Depth": "A layered approach to security with multiple defensive strategies.",
+    "Azure Synapse Analytics": "An analytics service that brings together enterprise data warehousing and Big Data analytics.",
+    "Azure Data Factory": "A data integration service to create ETL and ELT pipelines."
+  }
+}
+
