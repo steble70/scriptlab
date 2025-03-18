@@ -1,4 +1,4 @@
-# ccprep.py 0.2
+# ccprep.py 0.2.1
 # © Stefan Blecko 2025
 
 import json
@@ -8,30 +8,31 @@ import os
 
 def az900_glossary(fpath='AZ-900_glossary.json'):
     """
-    Laddar in en JSON-formaterad fil in i minnet.
+    Laddar in en JSON formaterad, AZ-900 ordlista som
+    jag skapade i CoPilot.
+
+    Args: fpath 
     Returns: Tuple
     """
     os.chdir(os.environ['USERPROFILE'])
-    # First i created a JSON formatted AZ-900 glossary
-    # (AZ-900_glossary.json) using CoPilot.
     jsonfile = open(fpath)
-    unformatted_json = json.load(jsonfile) # Loaded as a dict.
-    show_key = random.choice(list(unformatted_json['Glossary'].keys()))
-    show_value = random.choice(list(unformatted_json['Glossary'].values()))
-    return show_key, show_value
+    unformatted_json = json.load(jsonfile) # Laddas in som en dict.
+    sk = random.choice(list(unformatted_json['Glossary'].keys()))
+    sv = random.choice(list(unformatted_json['Glossary'].values()))
+    return sk, sv
 
 def main():
-    print(f'\nAZ-900 - TEST YOUR KNOWLEDGE\n\nWhat is "{az900_glossary()[0]}"?\n\n')
+    print(f'\nAZ-900 - TEST YOUR KNOWLEDGE\n') 
+    print(f'What is "{az900_glossary()[0]}"?\n\n')
 
     unique_results = set()
-    for item in range(1,6):
-        result = az900_glossary()[1]
-        unique_results.add(result) 
-    
+    while True:
+        if len(unique_results) != 5: 
+            result = az900_glossary()[1]
+            unique_results.add(result)
+        else:
+            break
     print(*unique_results, sep='\n')
-            
+
 if __name__ == "__main__":
     main()
-
-
-
