@@ -1,0 +1,22 @@
+{
+  "Glossary": { 
+    "Ad Hominem": "Att angripa motståndarens person istället för att bemöta sakens kärna.",
+    "Argumentum ad Populum": "Att hävda att en ståndpunkt är sann enbart för att majoriteten tror på den.",
+    "Falskt dilemma": "Att presentera en situation som om det endast finns två alternativ, trots att fler möjligheter existerar.",    
+    "Straw man": "Att förvränga eller överdriva motståndarens argument för att göra det enklare att anfalla.",
+    "Cirkulärt resonemang": "Att använda slutsatsen som en premiss i argumentet, vilket skapar en logisk cirkel.",    
+    "Slippery slope": "Att hävda att en liten åtgärd kommer att leda till en serie av negativa konsekvenser utan tillräckliga bevis.",
+    "Falsk analogi": "Att jämföra två saker som inte är tillräckligt lika för att dra en korrekt slutsats.",
+    "Appell till auktoritet": "Att stödja ett argument enbart genom att hänvisa till en auktoritetsfigur, utan att presentera ytterligare bevis.",
+    "Appell till känsla": "Att försöka övertyga genom att spela på känslor snarare än att använda logiska argument och bevis.",
+    "Post hoc ergo propter hoc": "Att anta att om en händelse följer en annan, så är den första automatiskt orsaken till den andra.",
+    "Tu quoque": "Att avfärda kritik genom att påpeka att kritikern själv inte lever upp till sina egna krav eller gör samma sak.",
+    "Argument från tystnad": "Att dra slutsatsen att något är sant eller falskt enbart baserat på att ingen motsäger det.",
+    "Kompositionsfel": "Att anta att något som gäller för enskilda delar nödvändigtvis gäller för helheten.",
+    "Divisionsfel": "Att anta att vad som gäller för helheten även måste gälla för enskilda delar.",
+    "Petitio Principii": "Att begära principen, dvs. att argumentet bygger på att man redan har antagit det man försöker bevisa.",
+    "Anekdotiskt resonemang": "Att använda enstaka personliga erfarenheter eller exempel som bevis för en allmän sanning, trots att mer omfattande data saknas.",
+    "Non sequitur": "Att dra en slutsats som inte logiskt följer från de givna premisserna."
+    }
+}
+
