@@ -13,16 +13,17 @@ F1      ShowCommandHelp
 F2      SwitchPredictionView
 #>
 
-$host.PrivateData.ErrorBackgroundColor = 'Black'
-$host.PrivateData.WarningBackgroundColor = 'Black'
-$host.PrivateData.DebugBackgroundColor = 'Black'
-$host.PrivateData.VerboseBackgroundColor = 'Black'
-$host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
-$host.UI.RawUI.BackgroundColor = 'Black'
+#$host.PrivateData.ErrorBackgroundColor = 'Black'
+#$host.PrivateData.WarningBackgroundColor = 'Black'
+#$host.PrivateData.DebugBackgroundColor = 'Black'
+#$host.PrivateData.VerboseBackgroundColor = 'Black'
+#$host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
+#$host.UI.RawUI.BackgroundColor = 'Black'
 
 Set-Variable $HOME $env:USERPROFILE  
 $projfolder = "POPYS"
 $path2projfolder = "$env:USERPROFILE\Desktop\$projfolder"
+
 
 if (Test-Path -Path $path2projfolder) {
 }
@@ -35,33 +36,34 @@ else {
 }
 
 New-PSDrive -Name $projfolder -PSProvider FileSystem -Root $path2projfolder `
--Description "Välkommen till skriptlådan." | Out-Null
+    -Description "Välkommen till skriptlådan." | Out-Null
 
-function Get-ProjectFolder {
-    Set-Location ($projfolder + ":\")
-    Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb, `
-    todo.csv -Recurse | Select-Object @{ Name = "Skript"; Expression = { $_.Name } },
-    @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | 
-    Sort-Object "Senast ändrad" -Descending | Out-Host 
-    if (Test-Path -Path D:\INSTALL\Git\PortableGit\bin\git.exe -PathType Leaf) {
-        $Env:PATH += ";D:\INSTALL\Git\PortableGit\bin"
-        function Global:prompt {
-            (Write-Host "[GIT]" -NoNewline -ForegroundColor DarkYellow `
-            -BackgroundColor DarkBlue) + 
-            "$($executionContext.SessionState.Path.CurrentLocation)$( `
-                '>' * ($nestedPromptLevel + 1)) "
-            return " "
+    function Get-ProjectFolder {
+        Set-Location ($projfolder + ":\")
+        Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb, `
+        todo.csv -Recurse | Select-Object @{ Name = "Skript"; Expression = { $_.Name } },
+        @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | 
+        Sort-Object "Senast ändrad" -Descending | Out-Host 
+        if (Test-Path -Path D:\INSTALL\Git\PortableGit\bin\git.exe -PathType Leaf) {
+            $Env:PATH += ";D:\INSTALL\Git\PortableGit\bin;D:\INSTALL\gh\bin"
+            function Global:prompt {
+                (Write-Host "[GIT]" -NoNewline -ForegroundColor DarkYellow `
+                -BackgroundColor DarkBlue) + 
+                "$($executionContext.SessionState.Path.CurrentLocation)$( `
+                    '>' * ($nestedPromptLevel + 1)) "
+                return " "
+            }
+        }
+        else {
+            Write-Warning "Hittade inte Git portable." -WarningAction Continue
         }
     }
-    else {
-        Write-Warning "Hittade inte Git portable." -WarningAction Continue
-    }
-}
+
 
 function Get-AllProjectFolder {
     Set-Location ($projfolder + ":\")
     Get-ChildItem -Directory | Where-Object { $_.Name -notlike '.*' -and `
-    $_.Name -notlike '__*__' } | Sort-Object -Property CreationTime -Descending | 
+            $_.Name -notlike '__*__' } | Sort-Object -Property CreationTime -Descending | 
     Select-Object @{Name = "Projekt skapade"; Expression = { $_.Name } }       
 }
 
@@ -119,10 +121,11 @@ function Get-ChangeLog {
                 Import-Csv -Path "$path2projfolder\$Project\docs\$changelogname"
             }
             else {
+                New-Item -Path "$path2projfolder\$Project\" -Name "docs" `
+                -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
                 New-Item -Path "$path2projfolder\$Project\docs\" -Name "$changelogname" `
-                -ItemType File | Out-Null 
-                Write-Warning "$changelogname finns ej. Skapar $changelogname." `
-                -WarningAction Continue
+                    -ItemType File -ErrorAction SilentlyContinue | Out-Null 
+                Write-Warning "$changelogname finns ej. Skapar filen." -WarningAction Continue
             }
         }
     }
@@ -132,9 +135,9 @@ function Get-ToDo {
     [CmdletBinding()]
     param (
         [string]$Topic,
-        [ValidateSet("WRITER", "YOUTUBE", "GOOGLE", "COPILOT", "GITHUB",
-        "STACKOVERFLOW", "POWERSHELL", "PYTHON", "MP4", "PDF", "URL")]
-        [string]$Tag = $null,
+        [ValidateSet("WRITER", "YOUTUBE", "GOOGLE", "COPILOT", "GITHUB", "WORK",
+            "STACKOVERFLOW", "POWERSHELL", "PYTHON", "MP4", "PDF", "URL", "MAIL")]
+        [string]$Category = $null,
         [switch]$EraseData
     )
     process {
@@ -143,9 +146,9 @@ function Get-ToDo {
         }
         elseif ($Topic) {
             $create_csv = [PSCustomObject]@{
-                'Date' = "$(Get-Date -Format FileDate)"
-                'Tag'  = $Tag
-                'ToDo' = $Topic
+                'Date'      = "$(Get-Date -Format FileDate)"
+                'Category'  = $Category
+                'ToDo'      = $Topic
             }
             $create_csv | 
             Export-Csv "$env:USERPROFILE\todo.csv" -Force -Append
@@ -161,6 +164,32 @@ function Get-ToDo {
     }
 }
 
+function Get-RandomCmdlet {
+    [CmdletBinding()]
+    param (
+        [switch]$CommonAlias,
+        $Num = 1
+    )
+    begin {
+        $all = Get-Alias | Select-Object @{
+            Name = "Dagens CmdLet"; Expression = { $_.DisplayName }} 
+           
+        $regexp_test = '^cat |^cd |^clear |^copy |^compare |^cp |^del |^dir |
+                        |^echo |^kill |^ls |^man |^md |^mount |^mv |^ps |^pwd |
+                        |^touch |^type |^sleep '
+    }
+    process {
+        if ($CommonAlias.IsPresent) {
+            $S = $all | Where-Object -Property 'Dagens CmdLet' `
+            -Match $regexp_test
+            $S[0..($Num-1)]
+        }
+        else {
+            $all | Get-Random -Count $Num  
+       }
+    }
+}
+
 function Get-PSConHelp {
     Get-PSReadlineKeyHandler -Bound | Select-Object Function, Key |
     Where-Object { $_.Function -notmatch "DigitArgument" }
@@ -171,20 +200,9 @@ function Get-AllHelpTopics {
     # $OutputEncoding.ASCIIENCODING
     $ProgressPreference = 'SilentlyContinue'
     Get-Help about_* | Select-Object @{Name = "Help article"; 
-    Expression = { $_.Name } } 
+        Expression = { $_.Name } 
+    } 
 }
-
-function Get-RandomCmdlet {
-    [CmdletBinding()]
-    param (
-        $Num = 1 
-    )
-    process {
-        @(Get-Alias | Select-Object @{Name = "Dagens CmdLet"; Expression = { `
-            $_.DisplayName } }) | Get-Random -Count $Num 
-    }
-}
-
 function New-PowerShellWindow {
     param (
         [switch]$AdminWindow = $false,
@@ -194,7 +212,7 @@ function New-PowerShellWindow {
         if ($AdminWindow.IsPresent) {
             Start-Process -FilePath "pwsh.exe" -ArgumentList `
                 "-NoLogo -NoExit -File $ScriptFile" -Verb RunAs
-        } 
+        }
         else {
             Start-Process -FilePath "pwsh.exe" -ArgumentList `
                 "-NoLogo -NoExit -File $ScriptFile"
@@ -216,28 +234,20 @@ function Clear-PSReadlineHist {
 }
 
 function Get-IpythonProfile {
-    param (
-        [switch]$ListProfile,
-        [switch]$DelHistData,
-        [System.IO.FileInfo]$SQLiteFile = 
-        "$env:USERPROFILE\.ipython\profile_clipro\history.sqlite"
-    )
-    if ($ListProfile.IsPresent) {
-        Get-ChildItem "$env:USERPROFILE\.ipython\" -Directory | 
-        Select-Object Name -ExpandProperty Name |
-        Where-Object {$_.Name -notlike "profile_default"} | ForEach-Object {
-        $_.Name -replace "profile_", ""}
-        Write-Output "`nipython --profile="
-    }
-    elseif ($DelHistData.IsPresent) {
-        Remove-Item -Path $SQLiteFile -Force -ErrorAction SilentlyContinue
-    }
-    else {
-        Write-Warning "Parameter saknas." -InformationAction Continue
+    $ipyprof = Get-ChildItem "$env:USERPROFILE\.ipython\" -Directory | 
+    Select-Object Name -ExpandProperty Name |
+    Where-Object { $_.Name -notlike "profile_default" } | ForEach-Object {
+        $_.Name -replace "profile_", "" }
+    
+    $ipyobject = New-Object -TypeName PSObject
+    foreach ($o in $ipyprof) {
+        Add-Member -InputObject $ipyobject -MemberType NoteProperty -Name `
+        'IPython profile (ipython --profile=)' -Value $o -Force
+        Write-Output $ipyobject
     }
 }
 
-function Get-ShellVar {
+function Get-ShellVariables {
     [CmdletBinding()]
     param (
         [switch]$EnvVar = $false
@@ -245,11 +255,13 @@ function Get-ShellVar {
     process {
         if ($EnvVar.IsPresent) {
             Get-ChildItem env: | Select-Object @{
-                Name = "Environment variables"; Expression = { $_.Name } } 
+                Name = "Environment variables"; Expression = { $_.Name } 
+            } 
         }
         else {
             Get-Variable | Select-Object @{
-                Name = "PowerShell variables"; Expression = { $_.Name } }
+                Name = "PowerShell variables"; Expression = { $_.Name } 
+            }
         }
     }
 }
@@ -276,6 +288,9 @@ function Get-VScodeShortcuts {
         "Outline view"                     = "Alt + O"
         "Git"                              = "Ctrl + Shift + G"
         "Toggle between Light/Dark Themes" = "Ctrl + Alt + T"
+        "Sidebar"                          = "Ctrl + B"
+        "Toggle shell"                     = "Ctrl + J"
+
     }
 }
 
@@ -337,10 +352,15 @@ function Get-WriterShortcuts {
     [PSCustomObject]@{
         "Skapa formatmall"             = "Shift + F11"
         "Formatmallar"                 = "F11"
+        "Konfig. dokumentmall"         = "ALt + Shift + P"
+        "Formellist"                   = "F2"
+        "Konfig. språk och korr."      = "Alt + F12"
+        "Autokorr. och Autotext"       = "Ctrl + F3"
+        "Infoga fältkommando"          = "Ctrl + F2"
         "Synonymordlista"              = "Ctrl + F7"
         "Navigator"                    = "F5"
         "Gå till sida"                 = "Ctrl + G"
-        "Sök och Ersätt"               = "Ctrl + H"
+        "Hitta och Ersätt"               = "Ctrl + H"
         "Skapa tabell"                 = "Ctrl + F12"
         "Centrerad text"               = "Ctrl + E"
         "Vänsterjusterad"              = "Ctrl + L"
@@ -360,7 +380,6 @@ function Get-WriterShortcuts {
 
 function Get-CalcShortcuts {
     Write-Warning "Inte implementerat" -InformationAction Continue
-    
 }
 
 function Get-ITHelp {   
@@ -371,16 +390,20 @@ function Get-ITHelp {
     process {
         switch ($Topic) {
             "PowerShell" {
-                Start-Process "https://learn.microsoft.com/en-us/powershell/scripting/overview"}
+                Start-Process "https://learn.microsoft.com/en-us/powershell/scripting/overview"
+            }
             "Obsidian" {
-                Start-Process "https://help.obsidian.md/Home"}
+                Start-Process "https://help.obsidian.md/Home"
+            }
             "VSCode" {
-                Start-Process "https://code.visualstudio.com/updates"}
+                Start-Process "https://code.visualstudio.com/updates"
+            }
             "Python" {
                 Start-Process "https://docs.python.org/3/library/index.html"   
             }
             default {
-                Start-Process "https://stackoverflow.com/questions"}
+                Start-Process "https://stackoverflow.com/questions"
+            }
         }
     }        
 }
@@ -409,7 +432,8 @@ function Get-AdminTask {
             "Remote management (parameterName ComputerName)", "Running files",
             "List files", "Service management", "Accunts management", "Cim",
             "Process management", "Service management", "Windows Log", 
-            "TCPIP management", "ZIP files", "Antivirus", "Microsoft 365", "Azure")]
+            "TCPIP management", "ZIP files", "Antivirus", "Microsoft 365", 
+            "Azure", "RegExp")]
         $Topic
     )
     process {
@@ -420,6 +444,16 @@ function Get-AdminTask {
         else {
             Write-Error -Message '"admincmdlets.csv" finns ej.' -Category ObjectNotFound
         }
+    }
+}
+
+function Invoke-PythonScript {
+    param (
+        [System.IO.FileInfo]$PyFile = "$env:USERPROFILE\PyFiles\ccprep.py"
+
+    )
+    process {
+        python.exe $PyFile
     }
 }
 
@@ -441,7 +475,7 @@ function Get-Py3QuickRef {
             $pycsvfile | Select-Object $Topic -Unique -ErrorAction Ignore
         }
         else {
-            Write-Error -Message '"py3quickref.csv" finns ej.' -Category ObjectNotFound
+            Write-Error -Message '"py3quickref.csv" finns ej.' -Category ResourceUnavailable
         }
     }
 }
@@ -453,8 +487,8 @@ function Get-CimWin32Classes {
     )
     process {
         Get-CimClass -ClassName win32_* | Select-Object CimClassName |
-        Where-Object {$_.CimClassName -Like $SearchFor -and $_.CimClassName `
-        -notlike "Win32_Perf*"}
+        Where-Object { $_.CimClassName -Like $SearchFor -and $_.CimClassName `
+                -notlike "Win32_Perf*" }
     }
 }
 
@@ -518,20 +552,20 @@ function Get-SysInfo {
     process {
         if ($TcpIp.IsPresent) {
             Get-ComputerInfo | Select-Object CsNetworkAdapters -ExpandProperty `
-            CsNetworkAdapters | Where-Object { $_.ConnectionStatus -eq "Connected" } |
+                CsNetworkAdapters | Where-Object { $_.ConnectionStatus -eq "Connected" } |
             Format-List Description, ConnectionStatus, IPAddresses, DHCPServer
         }
         else {
             Get-ComputerInfo | Select-Object @{
-            Name = "Datornamn"; Expression = { $_.CsName } },
-            @{Name = "Datortillverkare"; Expression = { $_.CsManufacturer } },
-            @{Name = "Dator serienummer"; Expression = { $_.CsModel } },
-            @{Name = "Windows-Utgåva"; Expression = { $_.WindowsProductName } },
-            @{Name = "Produkt-ID"; Expression = { $_.WindowsProductId } },
-            @{Name = "Windows version"; Expression = { $_.OsVersion } },
-            @{Name = "Windows build"; Expression = { $_.WindowsVersion } }
-            # @{Name = "BIOS"; Expression = { $_.BiosManufacturer } },
-            # @{Name = "BIOS Version"; Expression = { $_.BiosName, $_.BiosVersion } }
+                Name = "Datornamn"; Expression = { $_.CsName } },
+                @{Name = "Datortillverkare"; Expression = { $_.CsManufacturer } },
+                @{Name = "Dator serienummer"; Expression = { $_.CsModel } },
+                @{Name = "Användare"; Expression = { $_.CsUserName.Replace(
+                "$env:COMPUTERNAME\", "") } },
+                @{Name = "Windows-Utgåva"; Expression = { $_.WindowsProductName } },
+                @{Name = "Produkt-ID"; Expression = { $_.WindowsProductId } },
+                @{Name = "Windows version"; Expression = { $_.OsVersion } },
+                @{Name = "Windows build"; Expression = { $_.WindowsVersion } }
         }
     }
 }
@@ -544,7 +578,13 @@ function Get-Ps7QuickRef {
         "continue"                        = " "
         "data"                            = " "
         "do"                              = " "
-        "dynamicParam"                    = " "
+        'Dynamic Parameters'              = 'DynamicParam {}'
+        'ValidateSet Attribute'           = '[ValidateSet("Red", "Green", "Blue")]'
+        'Mandatory Parameters'            = '[Parameter(Mandatory=$true)]'
+        'ValueFromPipeline'               = 'Parameter(ValueFromPipeline=$true)]'
+        'HelpMessage'                     = '[Parameter(HelpMessage="Bla, bla, bla.")]'
+        'ValidateScript'                  = '[ValidateScript({Test-Path $_ -PathType Leaf})]'
+        'Aliases'                         = '[Alias("Dir")]'
         "else"                            = 'else {Write "Ingen Bonus"}'
         "elseif"                          = 'elseif ($x -eq $ra) {Write "Vinst!"; break}'
         "end"                             = " "
@@ -571,7 +611,7 @@ function Get-Ps7QuickRef {
         "Escape codes"                    = '`n', '`f'
         "ForEach-Object"                  = '1..20 | % { Write-Host "Försök nr $_" }'
         "Expresion evaluetion"            = '$(exp)'
-        "Here string"                     = "@'multiline string'@"
+        "Here string"                     = "'multiline string'"
         'Increment value'                 = '++'
         'Decrement'                       = '--'
         'String matches'                  = '-like'
@@ -584,25 +624,23 @@ function Get-Ps7QuickRef {
         'Last elements'                   = '$y[-1]'
         'Last 4 elements'                 = '$z[-4..-1]'
         'Index pos 1,4, and 6 through 9'  = '$arr[1,4+6..9]'
-        'Array'                           = '$a = @("a", "b")'
+        'Array'                           = '$a = ("a", "b")'
         'Add X to array'                  = '$a += "X"'
-        'Result to array'                 = '@(Get-Process)'
+        'Result to array'                 = '(Get-Process)'
         'Reverse an array'                = '[array]::Reverse($x)'
-        'Associative array'               = '$assoc = @{one=1 ; two=2}'
-        'Ordered associative array'       = '$assoc2[ordered]@{}'
+        'Associative array'               = '$assoc = {one=1 ; two=2}'
+        'Ordered associative array'       = '$assoc2[ordered]{}'
         'Add member'                      = '$assoc["three"] = 3'
         'Convert to PSCust'               = '$assoc2 = [PSCustomObject]$assoc'
         'Trim'                            = '$trim_char.ToString().Trim(".json")'
         'Sort'                            = '1..10 | Sort-Object -Descending'
-        'PSCustomObject'                  = '$myObject = [PSCustomObject]@{}'
+        'PSCustomObject'                  = '$myObject = [PSCustomObject]{}'
         'Add member to obj'               = '$myObject | Add-Member'
         'Remove obj'                      = '$myObject.psobject.Properties.Remove()'
         'Convert to JSON'                 = '$myObject | ConvertTo-Json > file.json'
         'Import from JSON'                = '$myO = gc file.json | ConvertFrom-Json'
         'Add member to PSCust'            = '$myO | Add-Member -MemberType NoteProperty'
         'Remove member from PSCust'       = '$myObject.psobject.properties.remove("X")'
-        '[Parameter()]'                   = '[ValidateSet("X", "Y", "Z")]', 
-                                            '[ValidateRange()]', '[ValidateScript({})]'
     }
 }
 
@@ -632,7 +670,7 @@ Clear-Host
 Clear-TmpFolder
 Get-ProjectFolder
 Write-Host
-try {(Get-ToDo)[-1] | Format-List -Property "ToDo" | Out-String -NoNewline}
+try { (Get-ToDo)[-2..-1] | Format-List "ToDo" | Out-String}
 catch { }
 Get-RandomCmdlet | Format-List | Out-String -NoNewline
 Write-Host
