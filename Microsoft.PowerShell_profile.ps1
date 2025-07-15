@@ -1,6 +1,6 @@
 <#
 PowerShell profile
-Version 0.4
+Version 0.4.1
 PowerShell version 7.4.1
     - .NET v8.0.0
     - PSReadLine v2.3.4
@@ -291,6 +291,26 @@ function Get-VScodeShortcuts {
         "Sidebar"                          = "Ctrl + B"
         "Toggle shell"                     = "Ctrl + J"
 
+    }
+}
+
+function Get-ColabShortcuts {
+    [PSCustomObject]@{
+        "Cell Execution"                   = "Shift + Enter"
+        "Insert a new cell above"          = "A"
+        "Insert a new cell below"          = "B"
+        "Delete the current cell"          = "D,D"
+        "Split the current cell"           = "Ctrl + Shift + -"
+        "Inline hint (Jupyter-style)"      = "Tab"
+        "Manual completion menu"           = "Ctrl + Space"
+        "Show shortcuts"                   = "Ctrl + M H"
+        "Save the notebook instantly"      = "Ctrl + M S"
+        "Convert the current cell"         = "Ctrl + M Y / Ctrl + M M"
+        "Interrupt a running cell"         = "Ctrl + M ."
+        "Toggle the Table of Contents"     = "Ctrl + M T"
+        "Run all cells in the notebook"    = "Ctrl + M R"
+        "Open the Command Palette"         = "Ctrl + Shift + P"
+        "Full editor-bindings reference"   = "F1"
     }
 }
 
