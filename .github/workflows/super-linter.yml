@@ -1,40 +1,35 @@
-name: Lint PowerShell 7 and Python 3
+name: Lint PowerShell and Python
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
+    branches: [ "main" ]
 
 jobs:
   lint:
-    name: Super-Linter (PS7 + Python3)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # Ensure Python 3 runtime is present for Python linters
-      - name: Set up Python 3
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Run Super-Linter (only PS + Python)
-        uses: github/super-linter@v6
+      - name: Super Linter
+        uses: super-linter/super-linter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: scriptlab       # Set to your default branch name
-          VALIDATE_ALL_CODEBASE: true     # Lint entire repo on push/PR
+          DEFAULT_BRANCH: main
+
+          # Only validate these languages
           VALIDATE_POWERSHELL: true
           VALIDATE_PYTHON: true
-          # Include only PowerShell and Python files
-          FILTER_REGEX_INCLUDE: '.*\.(ps1|psm1|psd1|py)$'
-          # Optional: make warnings fail the job? uncomment to enforce
-          # ERROR_ON_MISSING_EXEC_BIT: true
-          # PASS_ON_WARNINGS: false
+
+          # Only look at these file types (ignore everything else)
+          FILTER_REGEX_INCLUDE: '(\.ps1|\.psm1|\.psd1|\.pssc|\.py)$'
+
+          # Respect your .gitignore and lint the whole codebase on main
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_ALL_CODEBASE: true
