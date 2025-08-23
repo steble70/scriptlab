@@ -21,7 +21,7 @@ jobs:
         uses: super-linter/super-linter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: scriptlab
 
           # Only validate these languages
           VALIDATE_POWERSHELL: true
