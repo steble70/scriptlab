@@ -1,14 +1,26 @@
-name: Lint PowerShell and Python
+name: Super-Linter (Python + PowerShell only)
 
 on:
   push:
-    branches: [ "main" ]
+    paths:
+      - '**/*.py'
+      - '**/*.ps1'
+      - '**/*.psm1'
+      - '**/*.psd1'
   pull_request:
-    branches: [ "main" ]
+    paths:
+      - '**/*.py'
+      - '**/*.ps1'
+      - '**/*.psm1'
+      - '**/*.psd1'
+  workflow_dispatch:
 
 jobs:
   lint:
+    name: Lint Python and PowerShell
     runs-on: ubuntu-latest
+
+    # If your org/repo has restricted default token permissions, these are sufficient for linting.
     permissions:
       contents: read
       pull-requests: read
@@ -16,20 +28,44 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Full history helps Super-Linter compare against the default branch when needed.
+          fetch-depth: 0
 
-      - name: Super Linter
+      # Pass 1: PowerShell only
+      - name: Super-Linter (PowerShell only)
         uses: super-linter/super-linter@v6
         env:
+          # Change to your repo’s default branch if not "main" (e.g., "master")
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: scriptlab
 
-          # Only validate these languages
+          # Lint only changed files on PRs; with paths filters above, this stays focused
+          VALIDATE_ALL_CODEBASE: false
+
+          # Include only PowerShell file types
+          FILTER_REGEX_INCLUDE: '.*\.(ps1|psm1|psd1)$'
+
+          # Enable/disable specific linters
           VALIDATE_POWERSHELL: true
+          VALIDATE_PYTHON: false
+
+      # Pass 2: Python only
+      - name: Super-Linter (Python only)
+        uses: super-linter/super-linter@v6
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+          FILTER_REGEX_INCLUDE: '.*\.py$'
+
+          # Enable/disable specific linters
+          VALIDATE_POWERSHELL: false
           VALIDATE_PYTHON: true
 
-          # Only look at these file types (ignore everything else)
-          FILTER_REGEX_INCLUDE: '(\.ps1|\.psm1|\.psd1|\.pssc|\.py)$'
-
-          # Respect your .gitignore and lint the whole codebase on main
-          IGNORE_GITIGNORED_FILES: true
-          VALIDATE_ALL_CODEBASE: true
+          # Optional: fine-tune which Python linters run (uncomment to customize)
+          # VALIDATE_PYTHON_BLACK: true
+          # VALIDATE_PYTHON_ISORT: true
+          # VALIDATE_PYTHON_FLAKE8: true
+          # VALIDATE_PYTHON_PYLINT: false
+          # VALIDATE_PYTHON_MYPY: false
