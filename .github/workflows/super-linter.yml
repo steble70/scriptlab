@@ -37,7 +37,6 @@ jobs:
         uses: super-linter/super-linter@v6
         env:
           # Change to your repo’s default branch if not "main" (e.g., "master")
-          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           # Lint only changed files on PRs; with paths filters above, this stays focused
