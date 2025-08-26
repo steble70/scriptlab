@@ -54,7 +54,6 @@ jobs:
       - name: Super-Linter (Python only)
         uses: super-linter/super-linter@v6
         env:
-          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           FILTER_REGEX_INCLUDE: '.*\.py$'
