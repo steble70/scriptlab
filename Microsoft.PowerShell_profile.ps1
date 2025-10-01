@@ -1,24 +1,22 @@
 <#
 PowerShell profile
-Version 0.4.1
-PowerShell version 7.4.1
-    - .NET v8.0.0
-    - PSReadLine v2.3.4
-
-© 2024 Stefan Blecko
----
+© 2025 Stefan Blecko
+Version 0.4.3
+PowerShell 7.5.2, .NET v9.0, PSReadLine v2.3.6
 
 Powershell Shortcuts
 F1      ShowCommandHelp
 F2      SwitchPredictionView
 #>
 
-#$host.PrivateData.ErrorBackgroundColor = 'Black'
-#$host.PrivateData.WarningBackgroundColor = 'Black'
-#$host.PrivateData.DebugBackgroundColor = 'Black'
-#$host.PrivateData.VerboseBackgroundColor = 'Black'
-#$host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
-#$host.UI.RawUI.BackgroundColor = 'Black'
+
+
+$host.UI.RawUI.BackgroundColor = 'Black'
+$host.PrivateData.ErrorBackgroundColor = 'Black'
+$host.PrivateData.WarningBackgroundColor = 'Black'
+$host.PrivateData.DebugBackgroundColor = 'Black'
+$host.PrivateData.VerboseBackgroundColor = 'Black'
+$host.PrivateData.ProgressBackgroundColor = 'DarkBlue'
 
 Set-Variable $HOME $env:USERPROFILE  
 $projfolder = "POPYS"
@@ -39,8 +37,12 @@ New-PSDrive -Name $projfolder -PSProvider FileSystem -Root $path2projfolder `
     -Description "Välkommen till skriptlådan." | Out-Null
 
     function Get-ProjectFolder {
-        Set-Location ($projfolder + ":\")
-        Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint.ipynb, `
+        param (
+        [System.IO.FileInfo]$PF = ($projfolder + ":\")
+    )
+    process {
+        Set-Location -Path $PF
+        Get-ChildItem *.py, *.ps1, *.ipynb, *.csv, *.md -Exclude *checkpoint*, `
         todo.csv -Recurse | Select-Object @{ Name = "Skript"; Expression = { $_.Name } },
         @{Name = "Senast ändrad"; Expression = { $_.LastWriteTime } } | 
         Sort-Object "Senast ändrad" -Descending | Out-Host 
@@ -58,13 +60,18 @@ New-PSDrive -Name $projfolder -PSProvider FileSystem -Root $path2projfolder `
             Write-Warning "Hittade inte Git portable." -WarningAction Continue
         }
     }
-
+}
 
 function Get-AllProjectFolder {
-    Set-Location ($projfolder + ":\")
-    Get-ChildItem -Directory | Where-Object { $_.Name -notlike '.*' -and `
-            $_.Name -notlike '__*__' } | Sort-Object -Property CreationTime -Descending | 
-    Select-Object @{Name = "Projekt skapade"; Expression = { $_.Name } }       
+    param (
+        [System.IO.FileInfo]$APF = ($projfolder + ":\")
+    )
+    process {
+        Set-Location $APF
+        Get-ChildItem -Directory | Where-Object { $_.Name -notlike '.*' -and `
+        $_.Name -notlike '__*__' } | Sort-Object -Property CreationTime -Descending | 
+        Select-Object @{Name = "Projekt skapade"; Expression = { $_.Name } }
+    }       
 }
 
 function Set-DefaultPrompt {
@@ -76,24 +83,25 @@ function Set-DefaultPrompt {
     Set-Location "$env:USERPROFILE\Desktop\$projfolder"
 }
 
-function New-ProjektFolder {
+function New-ProjectFolder {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [string]$Newproject
+        [string]$Newproject,
+        [System.IO.FileInfo]$ProjectPath = $path2projfolder
     )
     process {
-        New-Item -Path $path2projfolder -Name $Newproject `
+        New-Item -Path $ProjectPath -Name $Newproject `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$path2projfolder\$Newproject\" -Name "temp" `
+        New-Item -Path "$ProjectPath\$Newproject\" -Name "temp" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$path2projfolder\$Newproject\" -Name "docs" `
+        New-Item -Path "$ProjectPath\$Newproject\" -Name "docs" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$path2projfolder\$Newproject\" -Name "$Newproject" `
+        New-Item -Path "$ProjectPath\$Newproject\" -Name "$Newproject" `
             -ItemType "directory" | Select-Object FullName -ExpandProperty FullName
-        New-Item -Path "$path2projfolder\$Newproject\" -Name "README.md" `
+        New-Item -Path "$ProjectPath\$Newproject\" -Name "README.md" `
             -ItemType File | Select-Object FullName -ExpandProperty FullName 
-        Set-Location -Path "POPYS:\$Newproject\temp"
+        Set-Location -Path "$ProjectPath\$Newproject\temp"
     }
 }
 
@@ -102,33 +110,36 @@ function Get-ChangeLog {
     param (
         [Parameter(Mandatory)]
         [string]$Project,
+        [System.IO.FileInfo]$ChangeLogPath = "$path2projfolder",
         [string]$Topic
     )
     begin {
         $changelogname = $Project + '-changelog.csv'
+        $new_pscustobj = [PSCustomObject]@{
+            'Datum'     = "$(Get-Date -Format FileDate)"
+            'Changelog' = "$Topic"
+        }
     }
     process {
-        if ($Topic) {
-            $new_pscustobj = [PSCustomObject]@{
-                'Datum'     = "$(Get-Date -Format FileDate)"
-                'Changelog' = "$Topic"
-            }
-            $new_pscustobj | 
-            Export-Csv "$path2projfolder\$Project\docs\$changelogname" -Force -Append
-        }
-        else {
-            if (Test-Path -Path "$path2projfolder\$Project\docs\$changelogname") {
-                Import-Csv -Path "$path2projfolder\$Project\docs\$changelogname"
+        while ($true) {
+            if (Test-Path -Path "$ChangeLogPath\$Project\docs\$changelogname" -PathType Leaf) {
+                if ($Topic) {
+                    Export-Csv -InputObject $new_pscustobj -Path `
+                    "$ChangeLogPath\$Project\docs\$changelogname" -Force -Append
+                }
+                else {
+                    Import-Csv -Path "$ChangeLogPath\$Project\docs\$changelogname"
+                }        
+            break
             }
             else {
-                New-Item -Path "$path2projfolder\$Project\" -Name "docs" `
+                New-Item -Path "$ChangeLogPath\$Project\" -Name "docs" `
                 -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
-                New-Item -Path "$path2projfolder\$Project\docs\" -Name "$changelogname" `
+                New-Item -Path "$ChangeLogPath\$Project\docs\" -Name "$changelogname" `
                     -ItemType File -ErrorAction SilentlyContinue | Out-Null 
-                Write-Warning "$changelogname finns ej. Skapar filen." -WarningAction Continue
+                }   
             }
-        }
-    }
+       }
 }
 
 function Get-ToDo {
@@ -203,6 +214,7 @@ function Get-AllHelpTopics {
         Expression = { $_.Name } 
     } 
 }
+
 function New-PowerShellWindow {
     param (
         [switch]$AdminWindow = $false,
@@ -222,8 +234,9 @@ function New-PowerShellWindow {
 
 function Clear-TmpFolder {
     $ErrorActionPreference = 'SilentlyContinue'
-    Unblock-File -Path $env:TEMP\*
-    Remove-Item $env:TEMP\* -Force -Recurse
+    $ProgressPreference = 'SilentlyContinue'
+    Unblock-File -Path $env:TEMP\* 
+    Remove-Item $env:TEMP\* -Force -Recurse 
 }
 
 function Clear-PSReadlineHist {
@@ -380,7 +393,7 @@ function Get-WriterShortcuts {
         "Synonymordlista"              = "Ctrl + F7"
         "Navigator"                    = "F5"
         "Gå till sida"                 = "Ctrl + G"
-        "Hitta och Ersätt"               = "Ctrl + H"
+        "Hitta och Ersätt"             = "Ctrl + H"
         "Skapa tabell"                 = "Ctrl + F12"
         "Centrerad text"               = "Ctrl + E"
         "Vänsterjusterad"              = "Ctrl + L"
@@ -399,33 +412,12 @@ function Get-WriterShortcuts {
 }
 
 function Get-CalcShortcuts {
-    Write-Warning "Inte implementerat" -InformationAction Continue
+    Write-Information "Inte implementerat" -InformationAction Continue
 }
 
-function Get-ITHelp {   
-    param (
-        [ValidateSet("PowerShell", "Obsidian", "VSCode", "Python")]
-        [string]$Topic
-    )
-    process {
-        switch ($Topic) {
-            "PowerShell" {
-                Start-Process "https://learn.microsoft.com/en-us/powershell/scripting/overview"
-            }
-            "Obsidian" {
-                Start-Process "https://help.obsidian.md/Home"
-            }
-            "VSCode" {
-                Start-Process "https://code.visualstudio.com/updates"
-            }
-            "Python" {
-                Start-Process "https://docs.python.org/3/library/index.html"   
-            }
-            default {
-                Start-Process "https://stackoverflow.com/questions"
-            }
-        }
-    }        
+function Start-AIHelp {  
+    # PowerShell, Obsidian, VSCode, Python
+    Write-Information "Inte implementerat" -InformationAction Continue
 }
 
 function Set-WindowTitle {
@@ -464,16 +456,6 @@ function Get-AdminTask {
         else {
             Write-Error -Message '"admincmdlets.csv" finns ej.' -Category ObjectNotFound
         }
-    }
-}
-
-function Invoke-PythonScript {
-    param (
-        [System.IO.FileInfo]$PyFile = "$env:USERPROFILE\PyFiles\ccprep.py"
-
-    )
-    process {
-        python.exe $PyFile
     }
 }
 
@@ -559,7 +541,7 @@ function Get-VimQuickRef {
 }
 
 function Get-CCNAQuickRef {
-    Write-Warning "Inte implementerat" -InformationAction Continue
+    Write-Information "Inte implementerat" -InformationAction Continue
 }
 
 function Get-SysInfo {
@@ -648,7 +630,7 @@ function Get-Ps7QuickRef {
         'Add X to array'                  = '$a += "X"'
         'Result to array'                 = '(Get-Process)'
         'Reverse an array'                = '[array]::Reverse($x)'
-        'Associative array'               = '$assoc = {one=1 ; two=2}'
+        'Associative array'               = '$assoc = @{"one" = 1; "two"=2}'
         'Ordered associative array'       = '$assoc2[ordered]{}'
         'Add member'                      = '$assoc["three"] = 3'
         'Convert to PSCust'               = '$assoc2 = [PSCustomObject]$assoc'
@@ -686,11 +668,8 @@ function Get-Win10QuickRef {
 }
 
 New-Alias -Name "touch" -Value New-Item -Description "Create new file."
+
 Clear-Host
+(Get-ToDo)[-2..-1] | Select-Object ToDo
 Clear-TmpFolder
-Get-ProjectFolder
-Write-Host
-try { (Get-ToDo)[-2..-1] | Format-List "ToDo" | Out-String}
-catch { }
-Get-RandomCmdlet | Format-List | Out-String -NoNewline
-Write-Host
+Get-ProjectFolder -PF C:\Users\steble70\Downloads\scriptlab-master
