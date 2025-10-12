@@ -3,7 +3,7 @@
 <#
 gn.ps1 - Grävande Nätverkstekniker
 Version 0.3
-© 2020 av Stefan Blecko
+© 2025 Stefan Blecko
 
 Att köra skriptet
 1. Starta Powershell 7 som administratör ("Run as Administrator")
@@ -103,20 +103,21 @@ function Get-WinLogErr {
     -or $_.LevelDisplayName -contains "Kritisk" }
     $sysappseclog | Sort-Object -Top $messages
 }
-function Get-FilesGreaterThan {
-    # Ex: Get-FilesGreaterThan -mbyte 7 -path C:\Users\steble70\Desktop\
+
+function Get-FileSize {
+    # Ex: Get-FileSize -Mbyte 7 -Path C:\Users\steble70\Desktop\
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [string]$mbyte,
+        [string]$Mbyte,
         [Parameter(Mandatory)]
-        [System.IO.FileInfo]$path
+        [System.IO.FileInfo]$Path
     )
-    $mbyte = $mbyte + "MB"
+    $Mbyte = $Mbyte + "MB"
     $ErrorActionPreference = 'SilentlyContinue'
-    Get-ChildItem -Path $path -Recurse -Force | Select-Object FullName, Length,
+    Get-ChildItem -Path $Path -Recurse -Force | Select-Object FullName, Length, 
     @{Name = "MB"; Expression = {[math]::Round($_.Length / 1MB, 2)}} |
-    Where-Object {$_.Length -gt $mbyte}
+    Where-Object {$_.Length -gt $Mbyte}
 }
 
 function Get-InstallProg {
