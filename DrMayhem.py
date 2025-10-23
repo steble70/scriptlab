@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-pyVirus.py av Stefan Blecko. Version 0.4, 2021
+DrMayhem.py av Stefan Blecko. Version 0.4, 2021
 
 Skriptet gör 3 saker.
 
@@ -12,22 +12,22 @@ Skriptet gör 3 saker.
 3. Skriptet genererar, slumpmässigt och automatiskt x antal textfiler
    med slumpmässigt innehåll på hårddisken. Man kan själv definiera
    hur många skräpfiler som ska skapas genom att skriva (från PowerShell):
-   python pyVirus.py (skapar en fil)
-   python pyVirus.py --generate_junk_files 340 (skapar 340 filer)
-   python pyVirus.py --generate_junk_files 1000000 (skapar EN MILJON filer)
-   python pyVirus.py -h (visar hjälp)
+   python DrMayhem.py (skapar en fil)
+   python DrMayhem.py --generate_junk_files 340 (skapar 340 filer)
+   python DrMayhem.py --generate_junk_files 1000000 (skapar EN MILJON filer)
+   python DrMayhem.py -h (visar hjälp)
 
 Vill man dölja källkoden kan man skapa en sk "compiled Python file".
 Starta python.exe/ipython.exe och skriv:
 
 import py_compile
-py_compile.compile('pyVirus.py', optimize=-1)
+py_compile.compile('DrMayhem.py', optimize=-1)
 
 Vill man hellre skapa en .exe fil av skriptet så kan man göra så här
 (från PowerShell):
 
 pip install pyinstaller
-pyinstaller --onefile pyVirus.py
+pyinstaller --onefile DrMayhem.py
 """
 
 import random
