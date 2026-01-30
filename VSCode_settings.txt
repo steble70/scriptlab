@@ -1,50 +1,81 @@
 {
-    // JSON settings, VScode 1.58, copyright Stefan Blecko 2021
-    "files.defaultLanguage": "powershell",
-    "python.pythonPath": "C:\\Users\\steble70\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
-    "python.formatting.provider": "black",
-    "python.languageServer": "Default",
+    // JSON settings, VS Code 1.108 — Stefan Blecko 2026
+    // ===== Activity Bar & Workbench =====
+    "workbench.activityBar.location": "hidden",
+    "workbench.colorCustomizations": {
+        "editorRuler.foreground": "#4e4f4c"
+    },
+    "workbench.editor.enablePreview": false,
+    "workbench.startupEditor": "none",
+    // ===== Breadcrumbs =====
+    "breadcrumbs.filePath": "off",
+    // ===== Chat & AI =====
+    "chat.commandCenter.enabled": false,
+    "chat.disableAIFeatures": true,
+    // ===== Editor =====
+    "editor.fontSize": 15,
+    "editor.formatOnPaste": true,
+    "editor.inlineSuggest.enabled": false,
+    "editor.minimap.autohide": "mouseover",
+    "editor.minimap.scale": 2,
+    "editor.rulers": [
+        79
+    ],
+    "editor.trimAutoWhitespace": true,
+    // ===== Files =====
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    // ===== JSON =====
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.formatOnSave": true
+    },
+    "json.schemaDownload.enable": true,
+    "json.validate.enable": true,
+    // ===== Markdown =====
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "other": "off",
+            "strings": "off"
+        },
+        "editor.wordWrap": "on"
+    },
+    "markdown.preview.breaks": true,
+    "markdown.preview.doubleClickToSwitchToEditor": false,
+    // ===== Python =====
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true
+    },
+    "python.analysis.autoImportCompletions": true,
     "python.analysis.typeCheckingMode": "basic",
-    "python.linting.pylintEnabled": false,
-    "python.showStartPage": false,
-    "powershell.powerShellDefaultVersion": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-    "powershell.integratedConsole.focusConsoleOnExecute": true,
+    "python.analysis.useLibraryCodeForTypes": true,
+    "python.languageServer": "Pylance",
+    // ===== PowerShell =====
+    "[powershell]": {
+        "editor.defaultFormatter": "ms-vscode.powershell",
+        "editor.formatOnSave": true
+    },
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
     "powershell.integratedConsole.showOnStartup": false,
     "powershell.integratedConsole.suppressStartupBanner": true,
-    "powershell.integratedConsole.forceClearScrollbackBuffer": true,
     "powershell.promptToUpdatePowerShell": false,
-    "terminal.external.windowsExec": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-    "terminal.integrated.cursorStyle": "underline",
-    "terminal.integrated.cursorBlinking": true,
-    "terminal.integrated.fontSize": 18,
-    "debug.openDebug": "neverOpen",
-    "editor.tabCompletion": "on",
-    "editor.suggestSelection": "first",
-    "files.trimTrailingWhitespace": true,
-    "window.dialogStyle": "custom",
-    "window.zoomLevel": 2,
-    "editor.fontSize": 18,
-    "editor.minimap.enabled": false,
-    "editor.formatOnPaste": true,
-    "workbench.activityBar.visible": false,
-    "workbench.startupEditor": "newUntitledFile",
-    "files.enableTrash": false,
-    "telemetry.enableTelemetry": false,
-    "telemetry.enableCrashReporter": false,
-    "breadcrumbs.enabled": true,
-    "breadcrumbs.filePath": "off",
-    "window.title": "${dirty}${separator}${appName}",
-    "vsicons.dontShowNewVersionMessage": true,
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
-    },
-    "jupyter.askForKernelRestart": false,
-    "jupyter.allowInput": true,
-    "workbench.editor.untitled.hint": "hidden",
-    "terminal.integrated.tabs.enabled": true,
+    // ===== Security =====
+    "security.workspace.trust.banner": "never",
+    "security.workspace.trust.emptyWindow": false,
+    "security.workspace.trust.enabled": false,
+    "security.workspace.trust.startupPrompt": "never",
     "security.workspace.trust.untrustedFiles": "open",
-    "notebook.cellToolbarLocation": {
-        "default": "right",
-        "jupyter-notebook": "left"
-    },
-    }
+    // ===== Terminal =====
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.cursorStyle": "underline",
+    "terminal.integrated.tabs.enabled": false,
+    // ===== Window =====
+    "window.commandCenter": false,
+    "window.dialogStyle": "custom",
+    "window.title": "${dirty}${separator}${appName}",
+    "window.zoomLevel": 1
+}
