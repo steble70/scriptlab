@@ -34,7 +34,7 @@ jobs:
 
       # Pass 1: PowerShell only
       - name: Super-Linter (PowerShell only)
-        uses: super-linter/super-linter@v6
+        uses: super-linter/super-linter@v8.3.1
         env:
           # Change to your repo’s default branch if not "main" (e.g., "master")
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
 
       # Pass 2: Python only
       - name: Super-Linter (Python only)
-        uses: super-linter/super-linter@v6
+        uses: super-linter/super-linter@v8.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
