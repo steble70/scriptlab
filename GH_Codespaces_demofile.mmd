@@ -1,0 +1,16 @@
+classDiagram
+class MultiStringResponder {
+  - inputs
+  - _explicit_answer
+  - _transform
+  + __init__()
+  + add_input(s)
+  + extend_inputs(items)
+  + get_answer()
+  + set_answer(answer)
+  + change_answer_substring(old, new)
+  + set_transform(func)
+  + charge_to(storage, key)
+  + clear_inputs()
+  + __repr__()
+}
