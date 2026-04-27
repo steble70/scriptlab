@@ -1,16 +1,47 @@
 classDiagram
-class LifeWorthContinuing {
-  - inputs = ["Fattigdom", "Ensamhet", "Kärlekslöshet"]
-  - _explicit_answer
-  - _transform
-  + __init__(*inputs, answer=None, transform=None)
-  + add_input(s)
-  + extend_inputs(items)
-  + get_answer()
-  + set_answer(answer)
-  + change_answer_substring(old, new)
-  + set_transform(func)
-  + charge_to(storage, key)
-  + clear_inputs()
-  + __repr__()
-}
+    class LifeWorthContinuing {
+        +inputs: InputCollection
+        -_explicit_answer: string
+        -_transform: AnswerTransformer
+        +__init__(*inputs, answer=None, transform=None)
+        +get_answer(): string
+        +set_answer(answer): void
+        +clear_inputs(): void
+        +charge_to(storage: StorageAdapter, key: string): void
+    }
+
+    class InputCollection {
+        -items: list
+        +__init__(items=None)
+        +add(item: string): void
+        +extend(items: list): void
+        +clear(): void
+        +__iter__(): iterator
+    }
+
+    class AnswerTransformer {
+        -func: callable
+        +__init__(func=None)
+        +set(func: callable): void
+        +apply(text: string): string
+    }
+
+    class StorageAdapter {
+        -storage: dict
+        +__init__(storage=None)
+        +save(key: string, payload: dict): void
+        +load(key: string): dict
+    }
+
+    class Counselor {
+        -lwc: LifeWorthContinuing
+        +__init__(lwc: LifeWorthContinuing)
+        +add_problem(problem: string): void
+        +propose_answer(): void
+        +save_session(storage: StorageAdapter, key: string): void
+    }
+
+    LifeWorthContinuing *-- InputCollection : has
+    LifeWorthContinuing ..> AnswerTransformer : delegates to
+    LifeWorthContinuing ..> StorageAdapter : persists to
+    Counselor --> LifeWorthContinuing : manages
