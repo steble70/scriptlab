@@ -1,47 +1,31 @@
-classDiagram
-    class LifeWorthContinuing {
-        +inputs: InputCollection
-        -_explicit_answer: string
-        -_transform: AnswerTransformer
-        +__init__(*inputs, answer=None, transform=None)
-        +get_answer(): string
-        +set_answer(answer): void
-        +clear_inputs(): void
-        +charge_to(storage: StorageAdapter, key: string): void
-    }
+graph TD
+    title[<b>Genererar spelledarpersoner till Drakar & Demoner</b>]
+    title --- Start
 
-    class InputCollection {
-        -items: list
-        +__init__(items=None)
-        +add(item: string): void
-        +extend(items: list): void
-        +clear(): void
-        +__iter__(): iterator
-    }
+    subgraph Script_Entry [Main Execution]
+        Start([Start Script]) --> Parse[Parse Arguments: 'ras' and 'num']
+        Parse --> InitGen[Initialize NPCGenerator]
+    end
 
-    class AnswerTransformer {
-        -func: callable
-        +__init__(func=None)
-        +set(func: callable): void
-        +apply(text: string): string
-    }
+    subgraph NPCGenerator_Class [Class: NPCGenerator]
+        InitGen --> Loop{For i in range 1 to num}
+        Loop -- "Next NPC" --> CreateNPC[Instantiate NPC Class]
+        PrintNPC[Print Formatted NPC String] --> Loop
+        Loop -- "Done" --> End([End Script])
+    end
 
-    class StorageAdapter {
-        -storage: dict
-        +__init__(storage=None)
-        +save(key: string, payload: dict): void
-        +load(key: string): dict
-    }
+    subgraph NPC_Class [Class: NPC]
+        direction TB
+        CreateNPC --> Roll[<b>_roll_attributes</b><br/>Roll STY, STO, FYS, SMI, INT, PSY, KAR<br/>based on Race]
+        Roll --> Calc[<b>_calculate_secondary_stats</b><br/>Calculate SB and KP]
+        Calc --> Str[<b>__str__</b><br/>Format Race, Index, and Stats]
+    end
 
-    class Counselor {
-        -lwc: LifeWorthContinuing
-        +__init__(lwc: LifeWorthContinuing)
-        +add_problem(problem: string): void
-        +propose_answer(): void
-        +save_session(storage: StorageAdapter, key: string): void
-    }
+    Str --> PrintNPC
 
-    LifeWorthContinuing *-- InputCollection : has
-    LifeWorthContinuing ..> AnswerTransformer : delegates to
-    LifeWorthContinuing ..> StorageAdapter : persists to
-    Counselor --> LifeWorthContinuing : manages
+    %% Styling
+    style title fill:none,stroke:none,font-size:20px
+    style NPCGenerator_Class fill:#f9f,stroke:#333,stroke-width:2px
+    style NPC_Class fill:#bbf,stroke:#333,stroke-width:2px
+    style Start fill:#dfd
+    style End fill:#fdd
