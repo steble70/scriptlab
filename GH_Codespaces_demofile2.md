@@ -24,7 +24,7 @@ classDiagram
     }
 
     NPCGenerator ..> NPC : creates
----
+
 
 sequenceDiagram
     actor User
