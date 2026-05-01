@@ -1,6 +1,9 @@
 ---
-title: SLP generering för Drakar och Demoner (https://github.com/steble70/scriptlab/blob/master/slpgen.py) - Class Diagram
+title: SLP generering för Drakar och Demoner (https://github.com/steble70/scriptlab/blob/master/slpgen.py)
 ---
+
+### Class Diagram
+```mermaid
 classDiagram
     class NPC {
         +String race
@@ -21,9 +24,6 @@ classDiagram
 
     NPCGenerator ..> NPC : creates
 
----
-title: SLP generering för Drakar och Demoner (https://github.com/steble70/scriptlab/blob/master/slpgen.py) - Sequence Diagram
----
 sequenceDiagram
     actor User
     participant main as main()
@@ -31,7 +31,7 @@ sequenceDiagram
     participant Gen as NPCGenerator
     participant Entity as NPC
 
-    User->>main: Run script (e.g., `python slpgen.py Orch 3`)
+    User->>main: Run script
     main->>Parser: parse_args()
     Parser-->>main: args (ras, num)
     main->>Gen: __init__(ras, num)
