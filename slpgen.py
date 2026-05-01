@@ -1,5 +1,7 @@
 """
 slpgen.py, version 0.7 (OOP-version)
+
+Copyright Stefan Blecko 2026
 Genererar spelledarpersoner till Drakar & Demoner
 """
 
