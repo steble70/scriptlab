@@ -25,6 +25,9 @@ classDiagram
 
     NPCGenerator ..> NPC : creates
 
+```
+
+```mermaid
 
 sequenceDiagram
     actor User
@@ -54,4 +57,4 @@ sequenceDiagram
         
         Gen->>User: print(npc)
     end
-'''
+```
