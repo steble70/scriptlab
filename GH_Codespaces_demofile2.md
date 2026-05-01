@@ -4,9 +4,7 @@
 ---
 
 ```mermaid
----
-title: SLP generering för Drakar och Demoner (Class Diagram)
----
+
 classDiagram
     class NPC {
         +String race
