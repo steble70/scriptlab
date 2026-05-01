@@ -1,0 +1,60 @@
+# SLP generering för Drakar och Demoner
+**Source:** [https://github.com/steble70/scriptlab/blob/master/slpgen.py](https://github.com/steble70/scriptlab/blob/master/slpgen.py)
+
+---
+
+```mermaid
+---
+title: SLP generering för Drakar och Demoner (Class Diagram)
+---
+classDiagram
+    class NPC {
+        +String race
+        +int index
+        +Dict attributes
+        +__init__(race, index)
+        -_roll_attributes() Dict
+        -_calculate_secondary_stats()
+        +__str__() String
+    }
+    
+    class NPCGenerator {
+        +String race
+        +int count
+        +__init__(race, count)
+        +generate_and_print()
+    }
+
+    NPCGenerator ..> NPC : creates
+
+---
+title: SLP generering för Drakar och Demoner (Sequence Diagram)
+---
+sequenceDiagram
+    actor User
+    participant main as main()
+    participant Parser as argparse
+    participant Gen as NPCGenerator
+    participant Entity as NPC
+
+    User->>main: Run script
+    main->>Parser: parse_args()
+    Parser-->>main: args (ras, num)
+    main->>Gen: __init__(ras, num)
+    main->>Gen: generate_and_print()
+    
+    loop 1 to count
+        Gen->>Entity: __init__(race, i)
+        activate Entity
+        Entity->>Entity: _roll_attributes()
+        Entity->>Entity: _calculate_secondary_stats()
+        Entity-->>Gen: npc instance
+        deactivate Entity
+        
+        Gen->>Entity: __str__()
+        activate Entity
+        Entity-->>Gen: formatted string
+        deactivate Entity
+        
+        Gen->>User: print(npc)
+    end
