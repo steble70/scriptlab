@@ -27,8 +27,7 @@ classDiagram
 
     NPCGenerator ..> NPC : creates
 ---
-title: SLP generering för Drakar och Demoner (Sequence Diagram)
----
+
 sequenceDiagram
     actor User
     participant main as main()
@@ -57,3 +56,4 @@ sequenceDiagram
         
         Gen->>User: print(npc)
     end
+'''
