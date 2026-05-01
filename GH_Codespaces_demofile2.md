@@ -26,7 +26,6 @@ classDiagram
     }
 
     NPCGenerator ..> NPC : creates
-
 ---
 title: SLP generering för Drakar och Demoner (Sequence Diagram)
 ---
