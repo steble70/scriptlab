@@ -1,31 +1,22 @@
-graph TD
-    title[<b>Genererar spelledarpersoner till Drakar & Demoner</b>]
-    title --- Start
+---
+title: SLP generering för Drakar och Demoner (https://github.com/steble70/scriptlab/blob/master/slpgen.py)
+---
+classDiagram
+    class NPC {
+        +String race
+        +int index
+        +Dict attributes
+        +__init__(race, index)
+        -_roll_attributes() Dict
+        -_calculate_secondary_stats()
+        +__str__() String
+    }
+    
+    class NPCGenerator {
+        +String race
+        +int count
+        +__init__(race, count)
+        +generate_and_print()
+    }
 
-    subgraph Script_Entry [Main Execution]
-        Start([Start Script]) --> Parse[Parse Arguments: 'ras' and 'num']
-        Parse --> InitGen[Initialize NPCGenerator]
-    end
-
-    subgraph NPCGenerator_Class [Class: NPCGenerator]
-        InitGen --> Loop{For i in range 1 to num}
-        Loop -- "Next NPC" --> CreateNPC[Instantiate NPC Class]
-        PrintNPC[Print Formatted NPC String] --> Loop
-        Loop -- "Done" --> End([End Script])
-    end
-
-    subgraph NPC_Class [Class: NPC]
-        direction TB
-        CreateNPC --> Roll[<b>_roll_attributes</b><br/>Roll STY, STO, FYS, SMI, INT, PSY, KAR<br/>based on Race]
-        Roll --> Calc[<b>_calculate_secondary_stats</b><br/>Calculate SB and KP]
-        Calc --> Str[<b>__str__</b><br/>Format Race, Index, and Stats]
-    end
-
-    Str --> PrintNPC
-
-    %% Styling
-    style title fill:none,stroke:none,font-size:20px
-    style NPCGenerator_Class fill:#f9f,stroke:#333,stroke-width:2px
-    style NPC_Class fill:#bbf,stroke:#333,stroke-width:2px
-    style Start fill:#dfd
-    style End fill:#fdd
+    NPCGenerator ..> NPC : creates
