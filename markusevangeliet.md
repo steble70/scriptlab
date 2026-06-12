@@ -49,7 +49,7 @@ mindmap
 
 ```
 
-###
+######
 mindmap
   root((Markusevangeliet
     anteckningar av Stefan Blecko))
