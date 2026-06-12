@@ -51,7 +51,7 @@ mindmap
 
 ```markdown
 
-#### Source code ####
+#### Source code
 
 mindmap
   root((Markusevangeliet
