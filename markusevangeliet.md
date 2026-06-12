@@ -48,7 +48,7 @@ mindmap
       Skrev inte berättelserna i rätt ordning
 
 ```
-
+```markdown
 ######
 mindmap
   root((Markusevangeliet
@@ -97,3 +97,4 @@ mindmap
       Skrev inte berättelserna i rätt ordning
 
 ###
+```
