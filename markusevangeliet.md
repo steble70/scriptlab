@@ -48,8 +48,8 @@ mindmap
       Skrev inte berättelserna i rätt ordning
 
 ```
+
 ```markdown
-######
 mindmap
   root((Markusevangeliet
     anteckningar av Stefan Blecko))
@@ -95,6 +95,4 @@ mindmap
       Markus = Petrus tolk
       Träffade aldrig Jesus personligen
       Skrev inte berättelserna i rätt ordning
-
-###
 ```
