@@ -1,11 +1,11 @@
 ```mermaid
-flowchart TB
+flowchart TD
     STEFAN["Stefan Blecko"]
 
     A["🛠 Bred teknisk grund
     Windows · M365 · Zendesk · Jira"]
     B["📜 Certifieringar
-    MS-900 · SC-900 · Cisco · AZ-900"]
+    MS-900 · SC-900 · Cisco"]
     C["💼 Praktisk erfarenhet
     Försvar · Kommun · Utbildning"]
     D["🔒 Säkerhetsfokus
