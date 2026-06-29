@@ -1,7 +1,7 @@
 # **Scriptlab** #
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
+%%{init: {'theme': 'default'}}%%
 mindmap
   root((Stefan Blecko))
     🛠 Bred teknisk grund
