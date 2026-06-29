@@ -1,7 +1,6 @@
 ```mermaid
 flowchart TB
-    STEFAN(["Stefan Blecko
-    IT-support"])
+    STEFAN["Stefan Blecko"]
 
     A["🛠 Bred teknisk grund
     Windows · M365 · Zendesk · Jira"]
