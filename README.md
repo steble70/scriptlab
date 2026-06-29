@@ -1,28 +1,34 @@
 # **Scriptlab** #
 
 ```mermaid
-flowchart TD
-    STEFAN["Stefan Blecko"]
-
-    A["🛠 Bred teknisk grund
-    Windows · M365 · Zendesk · Jira"]
-    B["📜 Certifieringar
-    MS-900 · SC-900 · Cisco"]
-    C["💼 Praktisk erfarenhet
-    Försvar · Kommun · Utbildning"]
-    D["🔒 Säkerhetsfokus
-    SC-900 · GDPR · Social engineering"]
-    E["💻 Programmeringskunskap
-    Python · OOP · Linux · matplotlib"]
-    F["🤝 Serviceinriktad profil
-    ITIL 4 · Koordination · Kommunikation"]
-
-    A --> STEFAN
-    B --> STEFAN
-    C --> STEFAN
-    D --> STEFAN
-    E --> STEFAN
-    F --> STEFAN
+mindmap
+  root((Stefan Blecko))
+    🛠 Bred teknisk grund
+      Windows
+      M365
+      Zendesk
+      Jira
+    📜 Certifieringar
+      MS-900
+      SC-900
+      Cisco
+    💼 Praktisk erfarenhet
+      Försvar
+      Kommun
+      Utbildning
+    🔒 Säkerhetsfokus
+      SC-900
+      GDPR
+      Social engineering
+    💻 Programmeringskunskap
+      Python
+      OOP
+      Linux
+      matplotlib
+    🤝 Serviceinriktad profil
+      ITIL 4
+      Koordination
+      Kommunikation
 ```
 
 
