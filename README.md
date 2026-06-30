@@ -1,39 +1,47 @@
-# **Scriptlab** #
-
-```mermaid
 %%{init: {'theme': 'forest'}}%%
 mindmap
   root((Stefan Blecko))
-    🛠 Bred teknisk grund
-      Windows
-      M365
-      Zendesk
-      Jira
-    📜 Certifieringar
-      MS-900
-      SC-900
-      Cisco
-    💼 Praktisk erfarenhet
-      Försvar
-      Kommun
-      Utbildning
-    🔒 Säkerhetsfokus
-      SC-900
-      GDPR
-      Social engineering
-    💻 Programmeringskunskap
-      Python
-      OOP
-      Linux
-      matplotlib
-    🤝 Serviceinriktad profil
-      ITIL 4
-      Koordination
-      Kommunikation
-```
-
-
-#### En samling Jupyter Notebooks, konfigurationsfiler och hjälpresurser för administration, certifieringsförberedelser och personliga arbetsflöden. Innehållet är avsett som arbetsmaterial och referens för utveckling, automation och studier. För att se mina inlägg på LinkedIn (som handlar om PowerShell, Python och cloud computing) klicka [här](https://www.linkedin.com/posts/stefan70_mina-senaste-inl%C3%A4gg-%C3%A4ldre-inl%C3%A4gg-https-activity-7340301715868434434-qEJP?utm_source=share&utm_medium=member_android&rcm=ACoAABLNm-IBiq5TlsugIMH7rx0wSvX1qkpzei0).
-
----
-
+    📜 Certifieringsmaterial
+      AZ-900_glossary.json
+      AZ-900 data för ccprep.py
+      MS-102_glossary.json
+      MS-102 data för ccprep.py
+      SC-401_glossary.json
+      SC-401 data för ccprep.py
+      MS-900.pdf
+      SC-900.pdf
+      StefanBlecko-Cisco Networking-certificate.pdf
+    💼 CV & Arbetsbevis
+      Blecko_Stefan_Arbetsbetyg.pdf
+      Blecko_Stefan_Arbetsbetyg_v2.pdf
+      Blecko_Stefan_Betyg_HiResPDF.pdf
+      Blecko_Stefan_Betyg_HiResPDF_v2.pdf
+      Blecko_Stefan_Lexicon_HiResPDF.pdf
+      Blecko_Stefan_kompetenser.pdf
+      Blecko_Stefan_kompetenser2.ipynb
+      CV-2025_test.ipynb
+      diploma-lexicon-stefan-blecko-153417-3694.pdf
+    💻 Python & Notebooks
+      7zip.ipynb
+      ccprep021refactored.ipynb
+      minicalc.ipynb
+      pySlot.ipynb
+      secpa.ipynb
+      Python_AI103_Tutorial.ipynb
+      JUTU.ipynb
+      MSVibe_test29dec.ipynb
+      slpgen.py
+      slpgen_UML.md
+    🖥 Terminal & Konfiguration
+      Microsoft.PowerShell_profile.ps1
+      Microsoft.VSCode_profile.ps1
+      VSCode_settings.txt
+      _vimrc
+      basiceq.ps1
+      gn.ps1
+      admincmdlets.csv
+      py3quickref.csv
+    ✝️ Teologi & Filosofi
+      kristendom.csv
+      markusevangeliet.md
+      argumentationsfel.json
