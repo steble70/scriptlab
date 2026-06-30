@@ -1,7 +1,7 @@
 ```mermaid
 %%{init: {'theme': 'default'}}%%
 mindmap
-  root((scriptlab))
+  root((<span style='font-size:64px'>scriptlab</span>"))
     📜 Certifieringsmaterial
     💼 CV & Arbetsbevis
     💻 Python & Notebooks
