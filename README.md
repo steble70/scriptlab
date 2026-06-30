@@ -1,9 +1,8 @@
 ```mermaid
-%%{init: {'theme': 'forest'}}%%
+%%{init: {'theme': 'default'}}%%
 mindmap
   root((scriptlab))
     📜 Certifieringsmaterial
-      StefanBlecko-Cisco Networking-certificate.pdf
     💼 CV & Arbetsbevis
     💻 Python & Notebooks
     🖥 Terminal & Konfiguration
