@@ -12,5 +12,5 @@ timeline
     title Pågående projekt: GitHub
     Vecka 28 : Bok - GitHub dummis
     Vecka 29 : Gör klart mindmapen
-    Vecka 30 : GitHub Codespace - tester
+    Vecka 30 : GitHub Codespace - tester & GitGraph
 ```
