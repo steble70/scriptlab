@@ -15,6 +15,7 @@ mindmap
 ####
 
 ```mermaid
+%%{init: {'theme':'forest'}}%%
 timeline
     title Pågående projekt: GitHub
     Vecka 28 : Bok - GitHub dummis
