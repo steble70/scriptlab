@@ -1,0 +1,5 @@
+Tool,Status,Error Type,Common Causes,How to Fix
+python_black,Fail,Code Formatting,Code style does not match strict PEP 8 rules used by Black.,"Install Black locally (`pip install black`) and run `black .` on your code before committing."
+python_pylint,Fail,Code Quality & Syntax,Syntax errors missing docstrings unused variables or poor naming conventions.,"Check the GitHub Action log for line numbers. Fix the specific PEP 8 or logic warnings listed."
+jscpd,Fail,Code Duplication,Identical or highly similar code blocks copy-pasted across your project.,"Refactor your code. Move repeated blocks into shared helper functions or reusable modules."
+checkov,Fail,Security Misconfiguration,Security vulnerabilities found in cloud infrastructure files (Docker Terraform Kubernetes).,"Review the logs for the failed policy ID. Secure your configuration (e.g. do not run Docker as root)."
