@@ -34,7 +34,8 @@ jobs:
 
           # --- Languages actually present in scriptlab ---
           VALIDATE_POWERSHELL: true        # .ps1 files (basiceq.ps1, gn.ps1, profiles)
-          VALIDATE_PYTHON_RUFF: true       # ccprep.py, slpgen.py
+          VALIDATE_PYTHON: true            # enable Python linting for .py files
+          PYTHON_LINTER: ruff              # use Ruff as the Python linter
           VALIDATE_JAVASCRIPT_ES: true     # ai103_readiness_v2.jsx
           VALIDATE_JSON: true              # AZ-900_glossary.json, MS-102_glossary.json, etc.
           VALIDATE_MARKDOWN: true          # README.md, slpgen_UML.md, markusevangeliet.md
