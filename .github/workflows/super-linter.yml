@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0   # full history so super-linter can diff against the base branch
 
       - name: Super-linter
-        uses: super-linter/super-linter@v7
+        uses: github/super-linter@v7
         env:
           DEFAULT_BRANCH: master   # scriptlab uses "master", not "main"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
