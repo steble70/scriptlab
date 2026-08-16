@@ -37,15 +37,13 @@ Rekommenderade minimikrav:
    cd scriptlab
 
 2. Skapa och aktivera en virtuell miljö (valfritt men rekommenderas)
-
    python -m venv .venv
-   # macOS / Linux
+   - macOS / Linux
    source .venv/bin/activate
-   # Windows PowerShell
+   - Windows PowerShell
    .\.venv\Scripts\Activate.ps1
 
 3. Installera Pythonberoenden
-
    pip install -r requirements.txt
 
 4. Starta Jupyter Lab (om du vill köra notebooks)
@@ -90,4 +88,4 @@ Bidra
 Detta projekt föreslås släppas under MIT-licensen. Se LICENSE-filen för detaljer.
 
 ### Kontakt / om skaparen
-Skapat av: steble70 (https://github.com/steble70)
+Skapat av: Stefan Blecko (https://github.com/steble70)
