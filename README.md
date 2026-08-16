@@ -2,20 +2,17 @@
 
 En samling tutorial-exempel för Python och PowerShell med fokus på praktiska arbetsflöden och grundläggande AI-användning.
 
-Kort om projektet
-
+### Kort om projektet
 ScriptLab innehåller Jupyter-notebooks, scripts och PowerShell-exempel som hjälper nybörjare och mellanliggande användare att lära sig hur man använder Python och PowerShell i praktiska scenarier — inklusive enklare AI-exempel, datahantering och automation.
 
-Varför (beskrivning / syfte)
-
+### Varför (beskrivning / syfte)
 Målet är att erbjuda lättillgängliga, hands-on-exempel som:
 - Förklarar grundläggande Python- och PowerShell-mönster
 - Visar hur man kombinerar skript och notebooks i arbetsflöden
 - Introducerar enkla AI-exempel (t.ex. API-anrop eller transformer-exempel)
 - Fungerar som en steg-för-steg-tutorial för egna experiment
 
-Projektstruktur / filöversikt
-
+### Projektstruktur / filöversikt
 - notebooks/                — Jupyter-notebooks (.ipynb) organiserade efter ämne
 - scripts/                  — Körbara Python-skript (.py) för demos och utilities
 - powershell/               — PowerShell-skript (.ps1) och moduler
@@ -27,15 +24,13 @@ Projektstruktur / filöversikt
 
 Obs: Jag planerar att konsolidera separata .ipynb-filer till en huvudnotebook (t.ex. notebooks/ScriptLab.ipynb) för enklare navigering.
 
-Installation / krav
-
+### Installation / krav
 Rekommenderade minimikrav:
 - Python 3.10+ (justera efter behov)
 - PowerShell 7+ (för PowerShell-skript på macOS/Linux/Windows)
 - Git
 
-Steg för att komma igång:
-
+### Steg för att komma igång:
 1. Klona repot
 
    git clone https://github.com/steble70/scriptlab.git
@@ -69,37 +64,30 @@ Kom igång / användningsexempel
 - Kör ett PowerShell-skript
   - pwsh ./powershell/example-script.ps1 -Param1 Value
 
-Tips för AI-exempel
-
+### Tips för AI-exempel
 - Om notebooks eller skript använder API-nycklar (t.ex. OpenAI) — exportera nyckeln som en miljövariabel eller använd en lokal .env-fil som ignoreras av Git (.gitignore).
   - macOS / Linux: export OPENAI_API_KEY="din_nyckel"
   - PowerShell: $env:OPENAI_API_KEY = "din_nyckel"
 
-Status / Roadmap
-
+### Status / Roadmap
 Nuvarande status
 - Grundläggande Python- och PowerShell-exempel: KLART (basversioner)
 - Flera fristående notebooks: KLART
 
-Planerat / På gång
+### Planerat / På gång
 - Konsolidera alla .ipynb till en huvudnotebook: PLANERAT
 - Fler AI-exempel med transformers och prompts: PLANERAT
 - Enkel CI för att köra skript / tests: PLANERAT
 - Publicera interaktiv version (Binder / Voila): ÖNSKAS
 
 Bidra
-
 - Öppna en issue för buggar eller förslag
 - Skicka en pull request mot standardbranchen
 - Kör flertest lokalt och skriv kortfattad beskrivning av ändringar
 - Lägg inte upp hemliga nycklar i repo
 
-Licens
-
+### Licens
 Detta projekt föreslås släppas under MIT-licensen. Se LICENSE-filen för detaljer.
 
-Kontakt / om skaparen
-
+### Kontakt / om skaparen
 Skapat av: steble70 (https://github.com/steble70)
-
-Vill du att jag uppdaterar README:n ytterligare (t.ex. engelska versioner, badges, eller en GitHub Actions-workflow)? Svara gärna med vad du vill lägga till.
