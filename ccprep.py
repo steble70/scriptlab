@@ -14,7 +14,7 @@ def dp900_glossary(fpath='DP-900_glossary.json'):
     Args: fpath 
     Returns: Tuple
     """
-    os.chdir(os.environ['USERPROFILE'])
+    # os.chdir(os.environ['USERPROFILE'])
     jsonfile = open(fpath)
     unformatted_json = json.load(jsonfile) # Laddas in som en dict.
     sk = random.choice(list(unformatted_json['Glossary'].keys()))
