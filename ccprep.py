@@ -1,4 +1,4 @@
-# ccprep.py 0.2.1
+# ccprep.py 0.2.2
 # © Stefan Blecko 2025
 
 import json
@@ -6,10 +6,10 @@ import random
 import os
 
 
-def az900_glossary(fpath='AZ-900_glossary.json'):
+def dp900_glossary(fpath='DP-900_glossary.json'):
     """
-    Laddar in en JSON formaterad, AZ-900 ordlista som
-    jag skapade i CoPilot.
+    Laddar in en JSON formaterad, DP-900 ordlista som
+    jag skapade i Copilot.
 
     Args: fpath 
     Returns: Tuple
@@ -22,13 +22,13 @@ def az900_glossary(fpath='AZ-900_glossary.json'):
     return sk, sv
 
 def main():
-    print(f'\nAZ-900 - TEST YOUR KNOWLEDGE\n') 
-    print(f'What is "{az900_glossary()[0]}"?\n\n')
+    print(f'\nDP-900 - TEST YOUR KNOWLEDGE\n') 
+    print(f'What is "{dp900_glossary()[0]}"?\n\n')
 
     unique_results = set()
     while True:
         if len(unique_results) != 5: 
-            result = az900_glossary()[1]
+            result = dp900_glossary()[1]
             unique_results.add(result)
         else:
             break
