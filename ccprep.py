@@ -3,7 +3,8 @@
 
 import json
 import random
-import os
+from pathlib import Path
+
 
 
 def dp900_glossary(fpath='DP-900_glossary.json'):
@@ -14,7 +15,7 @@ def dp900_glossary(fpath='DP-900_glossary.json'):
     Args: fpath 
     Returns: Tuple
     """
-    # os.chdir(os.environ['USERPROFILE'])
+    Path.cwd()
     jsonfile = open(fpath)
     unformatted_json = json.load(jsonfile) # Laddas in som en dict.
     sk = random.choice(list(unformatted_json['Glossary'].keys()))
