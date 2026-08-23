@@ -1,5 +1,5 @@
 # ccprep.py 0.2.2
-# © Stefan Blecko 2025
+# © Stefan Blecko 2026
 
 import json
 import random
