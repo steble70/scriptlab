@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
 
-          # Aktuella språk i repo:t
+          # Enabled linters only
           VALIDATE_POWERSHELL: true
           VALIDATE_PYTHON: true
           PYTHON_LINTER: ruff
@@ -36,19 +36,5 @@ jobs:
           VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
 
-          # Stäng av allt irrelevant
-          VALIDATE_YAML: false
-          VALIDATE_HTML: false
-          VALIDATE_CSS: false
-          VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_DOCKERFILE_HADOLINT: false
-          VALIDATE_BASH: false
-          VALIDATE_JSCPD: false
-          VALIDATE_CHECKOV: false
-          VALIDATE_GITLEAKS: false
-          VALIDATE_PYTHON_BLACK: false
-          VALIDATE_PYTHON_FLAKE8: false
-          VALIDATE_PYTHON_PYLINT: false
-
-          # Ignorera binärer, PDF, bilder, CSV och notebook-filer
+          # Ignore non-source files
           FILTER_REGEX_EXCLUDE: '.*\.(pdf|jpg|jpeg|png|svg|csv|ipynb)$'
