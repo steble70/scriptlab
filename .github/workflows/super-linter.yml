@@ -4,53 +4,51 @@ on:
   push:
     branches: [master]
   pull_request:
+    branches: [master]
 
-permissions: {}
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
-  build:
+  lint:
     name: Lint
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      issues: write
-      pull-requests: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history so super-linter can diff against the base branch
+          fetch-depth: 0
 
       - name: Super-linter
         uses: github/super-linter@v7
         env:
-          DEFAULT_BRANCH: master   # scriptlab uses "master", not "main"
+          DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          # Only lint changed files on PRs; full repo scan on push to master
           VALIDATE_ALL_CODEBASE: false
 
-          # --- Languages actually present in scriptlab ---
-          VALIDATE_POWERSHELL: true        # .ps1 files (basiceq.ps1, gn.ps1, profiles)
-          VALIDATE_PYTHON: true            # enable Python linting for .py files
-          PYTHON_LINTER: ruff              # use Ruff as the Python linter
-          VALIDATE_JAVASCRIPT_ES: true     # ai103_readiness_v2.jsx
-          VALIDATE_JSON: true              # AZ-900_glossary.json, MS-102_glossary.json, etc.
-          VALIDATE_MARKDOWN: true          # README.md, slpgen_UML.md, markusevangeliet.md
+          # Aktuella språk i repo:t
+          VALIDATE_POWERSHELL: true
+          VALIDATE_PYTHON: true
+          PYTHON_LINTER: ruff
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JSON: true
+          VALIDATE_MARKDOWN: true
 
-          # --- Not present / not useful here ---
+          # Stäng av allt irrelevant
           VALIDATE_YAML: false
           VALIDATE_HTML: false
           VALIDATE_CSS: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_DOCKERFILE_HADOLINT: false
           VALIDATE_BASH: false
+          VALIDATE_JSCPD: false
+          VALIDATE_CHECKOV: false
+          VALIDATE_GITLEAKS: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_PYLINT: false
 
-          # Optional: post lint results as a PR comment
-          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: true
-
-          # Skip PDFs, images, .ipynb notebooks, CSVs — none of these are linted anyway,
-          # but excluding them keeps the file-discovery step faster
-          FILTER_REGEX_EXCLUDE: '.*\.(pdf|jpg|jpeg|svg|csv|ipynb)$'
+          # Ignorera binärer, PDF, bilder, CSV och notebook-filer
+          FILTER_REGEX_EXCLUDE: '.*\.(pdf|jpg|jpeg|png|svg|csv|ipynb)$'
