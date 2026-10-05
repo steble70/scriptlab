@@ -104,16 +104,52 @@ class YAMLParser:
             if current_indent < indent_level:
                 return result, i
             
-            # If indent is more than list indent, skip
-            if current_indent > indent_level:
-                i += 1
-                continue
-            
             # Parse list item
             if stripped.startswith('-'):
                 item_content = stripped[1:].strip()
-                result.append(YAMLParser._parse_value(item_content))
-            
+                if ':' not in item_content:
+                    result.append(YAMLParser._parse_value(item_content))
+                    i += 1
+                    continue
+
+                item = {}
+                key, value = item_content.split(':', 1)
+                item[key.strip()] = YAMLParser._parse_value(value)
+                i += 1
+
+                while i < len(lines):
+                    nested_line = lines[i]
+                    nested_stripped = nested_line.lstrip()
+                    nested_indent = len(nested_line) - len(nested_stripped)
+
+                    if not nested_stripped or nested_stripped.startswith('#'):
+                        i += 1
+                        continue
+                    if nested_indent <= indent_level:
+                        break
+                    if nested_indent == indent_level + 2 and ':' in nested_stripped:
+                        key, value = nested_stripped.split(':', 1)
+                        value = value.strip()
+                        i += 1
+                        if not value and i < len(lines):
+                            child_line = lines[i]
+                            child_indent = len(child_line) - len(child_line.lstrip())
+                            if child_line.strip() and child_indent > nested_indent:
+                                item[key.strip()], i = YAMLParser._parse_lines(
+                                    lines, i, child_indent
+                                )
+                                continue
+                        item[key.strip()] = YAMLParser._parse_value(value)
+                        continue
+                    i += 1
+
+                result.append(item)
+                continue
+
+            if current_indent > indent_level:
+                i += 1
+                continue
+
             i += 1
         
         return result, i
@@ -278,7 +314,12 @@ class TestSuperLinterWorkflow(unittest.TestCase):
         # Test that binary and notebook files are excluded
         excluded_extensions = [".pdf", ".jpg", ".jpeg", ".png", ".svg", ".csv", ".ipynb"]
         for ext in excluded_extensions:
-            self.assertIn(ext, excluded_pattern, f"Extension {ext} should be in exclusion pattern")
+            sample_path = f"/repo/sample{ext}"
+            self.assertRegex(
+                sample_path,
+                excluded_pattern,
+                f"Extension {ext} should be excluded",
+            )
 
     def test_excluded_files_pattern_validity(self):
         """Test that the exclusion regex pattern is valid."""
@@ -328,23 +369,8 @@ class TestSuperLinterWorkflow(unittest.TestCase):
 
     def test_no_hardcoded_secrets(self):
         """Test that no hardcoded secrets are present in the workflow."""
-        def dict_to_string(d):
-            """Convert dict to string representation."""
-            result = []
-            for k, v in d.items():
-                if isinstance(v, dict):
-                    result.append(dict_to_string(v))
-                elif isinstance(v, list):
-                    for item in v:
-                        if isinstance(item, dict):
-                            result.append(dict_to_string(item))
-                        else:
-                            result.append(str(item))
-                else:
-                    result.append(str(v))
-            return " ".join(result)
-        
-        workflow_str = dict_to_string(self.workflow)
+        workflow_path = Path(".github/workflows/super-linter.yml")
+        workflow_str = workflow_path.read_text(encoding="utf-8")
         
         # Check for obvious hardcoded values (not checking for actual secrets,
         # just ensuring they're using ${{ secrets.* }} syntax)
@@ -400,8 +426,11 @@ class TestSuperLinterIntegration(unittest.TestCase):
         excluded_pattern = env["FILTER_REGEX_EXCLUDE"]
         
         # Jupyter notebooks (.ipynb) should be excluded since they're not plain Python
-        self.assertIn(".ipynb", excluded_pattern,
-                     "Jupyter notebooks should be excluded from linting")
+        self.assertRegex(
+            "/repo/notebook.ipynb",
+            excluded_pattern,
+            "Jupyter notebooks should be excluded from linting",
+        )
 
 
 def run_tests():
