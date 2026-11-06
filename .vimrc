@@ -1,6 +1,6 @@
 vim9script
 # Vimrc file
-# Version 0.2
+# Version 0.5
 # © Stefan Blecko 2026
 # Vim 9.0+ (target: Vim 9.2). Works in Windows GUI/console and in the
 # GitHub Codespaces terminal (Linux). Save as ~/.vimrc
