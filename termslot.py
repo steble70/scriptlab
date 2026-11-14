@@ -103,7 +103,7 @@ class SlotMachine:
                 win_amount=win_amount,
                 deposit=self.deposit,
                 message=(
-                    f"JACKPOT! You won {win_amount}:-. "
+                    f"JACKPOT! Payout: {win_amount}:-. "
                     f"Final balance: {self.deposit}:-."
                 ),
             )
@@ -206,8 +206,11 @@ class NotebookSlotMachine:
         )
         self._refresh()
 
-    def _refresh(self, message: str = "Ready to play.") -> None:
-        symbols = _symbols_for(0) if self.machine.game_over else ("🍒", "🍋", "🔔")
+    def _refresh(
+        self,
+        message: str = "Ready to play.",
+        symbols: tuple[str, str, str] = ("🍒", "🍋", "🔔"),
+    ) -> None:
         self.reels.value = (
             '<div style="font-size:2em;text-align:center">'
             + "　".join(symbols)
@@ -222,13 +225,7 @@ class NotebookSlotMachine:
 
     def _on_spin(self, _button: widgets.Button) -> None:
         result = self.machine.spin()
-        symbols = _symbols_for(result.win_amount)
-        self.reels.value = (
-            '<div style="font-size:2em;text-align:center">'
-            + "　".join(symbols)
-            + "</div>"
-        )
-        self._refresh(result.message)
+        self._refresh(result.message, _symbols_for(result.win_amount))
         with self.history:
             print(result.message)
 
