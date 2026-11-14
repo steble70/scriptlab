@@ -24,6 +24,30 @@ from IPython.display import display
 
 JACKPOT_THRESHOLD = 1000
 
+# --- Payout table ------------------------------------------------------------
+# Payouts are multiples of the bet, so the return to player (RTP) is the same
+# for every bet size.  Each spin draws one outcome uniformly from this pool:
+#   * small wins: randint(1 x bet, m x bet) for each m in SMALL_WIN_MULTIPLES
+#   * no win:     ZERO_OUTCOMES entries that pay 0
+#   * wide wins:  randint(0, m x bet) for each m in WIDE_WIN_MULTIPLES
+# With these values the RTP is 58.5 / 61 = 95.9 %.
+SMALL_WIN_MULTIPLES = (2, 2, 4, 6, 8, 9)
+ZERO_OUTCOMES = 53
+WIDE_WIN_MULTIPLES = (30, 50)
+
+
+def theoretical_rtp() -> float:
+    """Exact return to player as a fraction (0.959 means 95.9 %).
+
+    The mean of randint(a, b) is (a + b) / 2, so the expected payout per spin,
+    in units of the bet, is a sum of simple means divided by the pool size.
+    """
+    expected = sum((1 + m) / 2 for m in SMALL_WIN_MULTIPLES)
+    expected += sum(m / 2 for m in WIDE_WIN_MULTIPLES)
+    pool = len(SMALL_WIN_MULTIPLES) + ZERO_OUTCOMES + len(WIDE_WIN_MULTIPLES)
+    return expected / pool
+
+
 
 @dataclass
 class SpinResult:
@@ -57,23 +81,17 @@ class SlotMachine:
         return f"{self.deposit}:-"
 
     def _spin_wheel(self) -> int:
-        """Choose a payout using the original game's outcome weights."""
-        def small_win(maximum: int) -> int:
-            # Keep the payout range valid even when the bet exceeds its cap.
-            return random.randint(min(self.bet, maximum), maximum)
+        """Pick a payout from the pool described by the payout table."""
+        bet = self.bet
+        n_small = len(SMALL_WIN_MULTIPLES)
+        pick = random.randrange(n_small + ZERO_OUTCOMES + len(WIDE_WIN_MULTIPLES))
 
-        outcomes = [
-            small_win(10),
-            small_win(10),
-            small_win(20),
-            small_win(30),
-            small_win(40),
-            small_win(50),
-            *([0] * 50),
-            random.randint(0, 150),
-            random.randint(0, 250),
-        ]
-        return random.choice(outcomes)
+        if pick < n_small:
+            return random.randint(bet, SMALL_WIN_MULTIPLES[pick] * bet)
+        pick -= n_small
+        if pick < ZERO_OUTCOMES:
+            return 0
+        return random.randint(0, WIDE_WIN_MULTIPLES[pick - ZERO_OUTCOMES] * bet)
 
     def spin(self) -> SpinResult:
         """Play one round and return its result."""
@@ -136,20 +154,25 @@ class SlotMachine:
                 break
 
 
-# Payout ranges map to the symbols displayed on the reels.
+# Payout, as a multiple of the bet, maps to the symbols shown on the reels.
 _TIERS = (
     (0, ("🍋", "🍇", "🔔")),
-    (10, ("🍒", "🍒", "🍒")),
-    (50, ("🔔", "🔔", "🔔")),
-    (150, ("⭐", "⭐", "⭐")),
+    (2, ("🍒", "🍒", "🍒")),
+    (10, ("🔔", "🔔", "🔔")),
+    (30, ("⭐", "⭐", "⭐")),
     (float("inf"), ("💎", "💎", "💎")),
 )
 
 
-def _symbols_for(win_amount: int) -> tuple[str, str, str]:
-    """Return a reel-symbol combination appropriate for a payout."""
+def _symbols_for(win_amount: int, bet: int = 5) -> tuple[str, str, str]:
+    """Return a reel-symbol combination appropriate for a payout.
+
+    ``bet`` is the stake the payout belongs to (default: the game's default
+    bet), because the symbol tiers are multiples of the bet.
+    """
+    multiple = win_amount / bet
     for ceiling, symbols in _TIERS:
-        if win_amount <= ceiling:
+        if multiple <= ceiling:
             return symbols
     return _TIERS[-1][1]
 
@@ -225,7 +248,7 @@ class NotebookSlotMachine:
 
     def _on_spin(self, _button: widgets.Button) -> None:
         result = self.machine.spin()
-        self._refresh(result.message, _symbols_for(result.win_amount))
+        self._refresh(result.message, _symbols_for(result.win_amount, self.machine.bet))
         with self.history:
             print(result.message)
 
