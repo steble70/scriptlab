@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from typing import Iterator
 
 import ipywidgets as widgets
-from IPython.display import HTML, display
+from IPython.display import display
 
 JACKPOT_THRESHOLD = 1000
 
@@ -108,7 +108,7 @@ class SlotMachine:
                 ),
             )
 
-        # End the game as soon as the remaining balance cannot cover another bet.
+        # End the game if the remaining balance cannot cover another bet.
         if self.deposit < self.bet:
             self.game_over = True
             return SpinResult(
