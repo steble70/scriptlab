@@ -1,16 +1,16 @@
-"""A simple slot-machine game for JupyterLab and Jupyter Notebook.
+"""En enkel spelautomat för JupyterLab och Jupyter Notebook.
 
-Install the widget dependency if needed::
+Installera widget-beroendet vid behov::
 
     %pip install ipywidgets
 
-Then run in a notebook cell::
+Kör sedan i en notebook-cell::
 
-    from termslot import show_slot_machine
+    from termslot_sv import show_slot_machine
     game = show_slot_machine()
 
-The game logic can also be used without the notebook interface via
-``SlotMachine`` and its ``spin()`` / ``play()`` methods.
+Spellogiken kan också användas utan notebook-gränssnittet via
+``SlotMachine`` och dess metoder ``spin()`` / ``play()``.
 """
 
 from __future__ import annotations
@@ -24,23 +24,25 @@ from IPython.display import display
 
 JACKPOT_THRESHOLD = 1000
 
-# --- Payout table ------------------------------------------------------------
-# Payouts are multiples of the bet, so the return to player (RTP) is the same
-# for every bet size.  Each spin draws one outcome uniformly from this pool:
-#   * small wins: randint(1 x bet, m x bet) for each m in SMALL_WIN_MULTIPLES
-#   * no win:     ZERO_OUTCOMES entries that pay 0
-#   * wide wins:  randint(0, m x bet) for each m in WIDE_WIN_MULTIPLES
-# With these values the RTP is 58.5 / 61 = 95.9 %.
+# --- Utbetalningstabell ------------------------------------------------------
+# Utbetalningarna är multiplar av insatsen, så återbetalningsandelen (RTP) är
+# densamma för alla insatsstorlekar. Varje snurr drar ett utfall likformigt ur
+# denna pool:
+#   * små vinster:   randint(1 x insats, m x insats) för varje m i SMALL_WIN_MULTIPLES
+#   * ingen vinst:   ZERO_OUTCOMES poster som betalar 0
+#   * breda vinster: randint(0, m x insats) för varje m i WIDE_WIN_MULTIPLES
+# Med dessa värden blir RTP 58,5 / 61 = 95,9 %.
 SMALL_WIN_MULTIPLES = (2, 2, 4, 6, 8, 9)
 ZERO_OUTCOMES = 53
 WIDE_WIN_MULTIPLES = (30, 50)
 
 
 def theoretical_rtp() -> float:
-    """Exact return to player as a fraction (0.959 means 95.9 %).
+    """Exakt återbetalningsandel (RTP) som bråkdel (0,959 betyder 95,9 %).
 
-    The mean of randint(a, b) is (a + b) / 2, so the expected payout per spin,
-    in units of the bet, is a sum of simple means divided by the pool size.
+    Medelvärdet av randint(a, b) är (a + b) / 2, så den förväntade
+    utbetalningen per snurr, uttryckt i insatser, är en summa av enkla
+    medelvärden delad med poolens storlek.
     """
     expected = sum((1 + m) / 2 for m in SMALL_WIN_MULTIPLES)
     expected += sum(m / 2 for m in WIDE_WIN_MULTIPLES)
@@ -51,24 +53,24 @@ def theoretical_rtp() -> float:
 
 @dataclass
 class SpinResult:
-    """The outcome of one spin."""
+    """Utfallet av en snurr."""
 
-    status: str  # "insufficient", "jackpot", "game_over", or "ok"
+    status: str  # "insufficient", "jackpot", "game_over" eller "ok"
     win_amount: int = 0
     deposit: int = 0
     message: str = ""
 
 
 class SlotMachine:
-    """Game logic, independent of the notebook interface."""
+    """Spellogik, oberoende av notebook-gränssnittet."""
 
     def __init__(self, deposit: int = 100, bet: int = 5, attempts: int = 1):
         if deposit < 0:
-            raise ValueError("Deposit cannot be negative.")
+            raise ValueError("Insättningen kan inte vara negativ.")
         if bet <= 0:
-            raise ValueError("Bet must be greater than zero.")
+            raise ValueError("Insatsen måste vara större än noll.")
         if attempts < 0:
-            raise ValueError("Attempts cannot be negative.")
+            raise ValueError("Antalet försök kan inte vara negativt.")
 
         self.deposit = deposit
         self.bet = bet
@@ -77,11 +79,11 @@ class SlotMachine:
 
     @property
     def balance(self) -> str:
-        """Return the current balance in the game's display format."""
+        """Returnera aktuellt saldo i spelets visningsformat."""
         return f"{self.deposit}:-"
 
     def _spin_wheel(self) -> int:
-        """Pick a payout from the pool described by the payout table."""
+        """Välj en utbetalning ur poolen som beskrivs i utbetalningstabellen."""
         bet = self.bet
         n_small = len(SMALL_WIN_MULTIPLES)
         pick = random.randrange(n_small + ZERO_OUTCOMES + len(WIDE_WIN_MULTIPLES))
@@ -94,12 +96,12 @@ class SlotMachine:
         return random.randint(0, WIDE_WIN_MULTIPLES[pick - ZERO_OUTCOMES] * bet)
 
     def spin(self) -> SpinResult:
-        """Play one round and return its result."""
+        """Spela en runda och returnera resultatet."""
         if self.game_over:
             return SpinResult(
                 status="game_over",
                 deposit=self.deposit,
-                message="Game over. Reset the game to play again.",
+                message="Spelet är slut. Starta ett nytt spel för att spela igen.",
             )
 
         if self.deposit < self.bet:
@@ -107,7 +109,7 @@ class SlotMachine:
             return SpinResult(
                 status="insufficient",
                 deposit=self.deposit,
-                message="Not enough credits to place another bet.",
+                message="Inte tillräckligt med krediter för ännu en insats.",
             )
 
         self.deposit -= self.bet
@@ -121,12 +123,12 @@ class SlotMachine:
                 win_amount=win_amount,
                 deposit=self.deposit,
                 message=(
-                    f"JACKPOT! Payout: {win_amount}:-. "
-                    f"Final balance: {self.deposit}:-."
+                    f"JACKPOT! Utbetalning: {win_amount}:-. "
+                    f"Slutsaldo: {self.deposit}:-."
                 ),
             )
 
-        # End the game if the remaining balance cannot cover another bet.
+        # Avsluta spelet om det återstående saldot inte räcker till en ny insats.
         if self.deposit < self.bet:
             self.game_over = True
             return SpinResult(
@@ -134,7 +136,8 @@ class SlotMachine:
                 win_amount=win_amount,
                 deposit=self.deposit,
                 message=(
-                    f"Payout: {win_amount}:-. Not enough credits for another bet."
+                    f"Utbetalning: {win_amount}:-. "
+                    "Inte tillräckligt med krediter för ännu en insats."
                 ),
             )
 
@@ -142,11 +145,11 @@ class SlotMachine:
             status="ok",
             win_amount=win_amount,
             deposit=self.deposit,
-            message=f"Payout: {win_amount}:-.",
+            message=f"Utbetalning: {win_amount}:-.",
         )
 
     def play(self) -> Iterator[str]:
-        """Yield messages for up to ``attempts`` spins (batch use)."""
+        """Ge meddelanden för upp till ``attempts`` snurr (batchanvändning)."""
         for _ in range(self.attempts):
             result = self.spin()
             yield result.message
@@ -154,7 +157,7 @@ class SlotMachine:
                 break
 
 
-# Payout, as a multiple of the bet, maps to the symbols shown on the reels.
+# Utbetalningen, som multipel av insatsen, avgör vilka symboler hjulen visar.
 _TIERS = (
     (0, ("🍋", "🍇", "🔔")),
     (2, ("🍒", "🍒", "🍒")),
@@ -165,10 +168,10 @@ _TIERS = (
 
 
 def _symbols_for(win_amount: int, bet: int = 5) -> tuple[str, str, str]:
-    """Return a reel-symbol combination appropriate for a payout.
+    """Returnera en symbolkombination som passar en utbetalning.
 
-    ``bet`` is the stake the payout belongs to (default: the game's default
-    bet), because the symbol tiers are multiples of the bet.
+    ``bet`` är den insats utbetalningen hör till (standard: spelets
+    standardinsats), eftersom symbolnivåerna är multiplar av insatsen.
     """
     multiple = win_amount / bet
     for ceiling, symbols in _TIERS:
@@ -178,26 +181,26 @@ def _symbols_for(win_amount: int, bet: int = 5) -> tuple[str, str, str]:
 
 
 class NotebookSlotMachine:
-    """ipywidgets interface for playing the game in a notebook."""
+    """ipywidgets-gränssnitt för att spela spelet i en notebook."""
 
     def __init__(self, deposit: int = 100, bet: int = 5):
         self.machine = SlotMachine(deposit=deposit, bet=bet)
 
         self.deposit_input = widgets.IntText(
             value=deposit,
-            description="Deposit:",
+            description="Insättning:",
             style={"description_width": "initial"},
         )
         self.bet_input = widgets.IntText(
             value=bet,
-            description="Bet:",
+            description="Insats:",
             style={"description_width": "initial"},
         )
         self.spin_button = widgets.Button(
-            description="Spin", button_style="success", icon="play"
+            description="Snurra", button_style="success", icon="play"
         )
         self.reset_button = widgets.Button(
-            description="New game", button_style="warning", icon="refresh"
+            description="Nytt spel", button_style="warning", icon="refresh"
         )
         self.reels = widgets.HTML()
         self.status = widgets.HTML()
@@ -217,13 +220,13 @@ class NotebookSlotMachine:
 
         self.widget = widgets.VBox(
             [
-                widgets.HTML("<h2>🎰 Slot Machine</h2>"),
+                widgets.HTML("<h2>🎰 Spelautomat</h2>"),
                 widgets.HBox([self.deposit_input, self.bet_input]),
                 widgets.HBox([self.spin_button, self.reset_button]),
                 self.reels,
                 self.status,
                 self.progress,
-                widgets.HTML("<b>Game history</b>"),
+                widgets.HTML("<b>Spelhistorik</b>"),
                 self.history,
             ]
         )
@@ -231,7 +234,7 @@ class NotebookSlotMachine:
 
     def _refresh(
         self,
-        message: str = "Ready to play.",
+        message: str = "Redo att spela.",
         symbols: tuple[str, str, str] = ("🍒", "🍋", "🔔"),
     ) -> None:
         self.reels.value = (
@@ -240,8 +243,8 @@ class NotebookSlotMachine:
             + "</div>"
         )
         self.status.value = (
-            f"<b>Balance:</b> {self.machine.balance} &nbsp; "
-            f"<b>Bet:</b> {self.machine.bet}:-<br>{message}"
+            f"<b>Saldo:</b> {self.machine.balance} &nbsp; "
+            f"<b>Insats:</b> {self.machine.bet}:-<br>{message}"
         )
         self.progress.value = min(max(self.machine.deposit, 0), JACKPOT_THRESHOLD)
         self.spin_button.disabled = self.machine.game_over
@@ -258,23 +261,24 @@ class NotebookSlotMachine:
         if deposit < 0 or bet <= 0:
             self.status.value = (
                 "<span style='color:#b00020'>"
-                "Deposit must be zero or more, and bet must be greater than zero."
+                "Insättningen måste vara noll eller mer, och insatsen måste vara "
+                "större än noll."
                 "</span>"
             )
             return
 
         self.machine = SlotMachine(deposit=deposit, bet=bet)
         self.history.clear_output()
-        self._refresh("New game started.")
+        self._refresh("Nytt spel startat.")
 
 
 def show_slot_machine(deposit: int = 100, bet: int = 5) -> NotebookSlotMachine:
-    """Display the game in JupyterLab/Notebook and return its controller."""
+    """Visa spelet i JupyterLab/Notebook och returnera dess styrobjekt."""
     game = NotebookSlotMachine(deposit=deposit, bet=bet)
     display(game.widget)
     return game
 
 
 if __name__ == "__main__":
-    print("This module is designed for JupyterLab/Notebook.")
-    print("In a notebook cell, run: from termslot import show_slot_machine; show_slot_machine()")
+    print("Den här modulen är avsedd för JupyterLab/Notebook.")
+    print("Kör i en notebook-cell: from termslot_sv import show_slot_machine; show_slot_machine()")
